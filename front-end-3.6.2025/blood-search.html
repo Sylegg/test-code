@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tìm Máu - BloodLife</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: #ff4d4d;
+            color: white;
+            padding: 1rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* Search Page Styles */
+        .search-container {
+            max-width: 1200px;
+            margin: 100px auto 40px;
+            padding: 2rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-header h1 {
+            color: #333;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .page-header p {
+            color: #666;
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Search Form Styles */
+        .search-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            color: #333;
+            background-color: white;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:hover,
+        .form-group select:hover {
+            border-color: #ff4d4d;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #ff4d4d;
+            box-shadow: 0 0 0 3px rgba(255, 77, 77, 0.1);
+        }
+
+        .distance-slider {
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+
+        .distance-value {
+            text-align: center;
+            color: #666;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .search-button {
+            background-color: #ff4d4d;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .search-button:hover {
+            background-color: #ff3333;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 77, 77, 0.2);
+        }
+
+        .search-button:active {
+            transform: translateY(0);
+        }
+
+        /* Search Results Styles */
+        .search-results {
+            display: none;
+            margin-top: 2rem;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .results-header h2 {
+            color: #333;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .results-count {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .result-card h3 {
+            color: #ff4d4d;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .result-card .distance {
+            font-size: 0.9rem;
+            color: #666;
+            background: #f5f5f5;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+        }
+
+        .result-card .details {
+            margin-top: 1rem;
+        }
+
+        .result-card .detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .result-card .detail-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .result-card .detail-value {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .result-card .contact-button {
+            background-color: #ff4d4d;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .result-card .contact-button:hover {
+            background-color: #ff3333;
+            transform: translateY(-2px);
+        }
+
+        /* Map Container Styles */
+        .map-container {
+            height: 400px;
+            margin: 2rem 0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .map-overlay {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: white;
+            padding: 10px;
+            border-radius: 4px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .map-legend {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .legend-marker {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .marker-donor {
+            background-color: #4CAF50;
+        }
+
+        .marker-recipient {
+            background-color: #FF4D4D;
+        }
+
+        .marker-urgent {
+            background-color: #FFA500;
+        }
+
+        .marker-emergency {
+            background-color: #FF0000;
+        }
+
+        /* Mobile Navigation */
+        .mobile-menu-button {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            padding: 2rem;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .mobile-nav.active {
+            transform: translateX(0);
+        }
+
+        .mobile-nav .close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .mobile-nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .mobile-nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Dropdown styles */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .dropdown-btn::after {
+            content: '▼';
+            font-size: 0.7rem;
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown:hover .dropdown-btn::after {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-btn:hover {
+            color: #ff4d4d;
+            transform: translateY(-1px);
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            min-width: 220px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            border-radius: 12px;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 77, 77, 0.1);
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .dropdown-content a {
+            color: #333;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dropdown-content a::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: #ff4d4d;
+            transform: scaleY(0);
+            transition: transform 0.2s ease;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #fff5f5;
+            color: #ff4d4d;
+            transform: translateX(5px);
+            padding-left: 20px;
+        }
+
+        .dropdown-content a:hover::before {
+            transform: scaleY(1);
+        }
+
+        .dropdown-content a::after {
+            content: '→';
+            position: absolute;
+            right: 16px;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-content a:hover::after {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links, .auth-buttons {
+                display: none;
+            }
+
+            .mobile-menu-button {
+                display: block;
+            }
+
+            .mobile-nav {
+                display: block;
+            }
+
+            .dropdown {
+                width: 100%;
+            }
+
+            .dropdown-btn {
+                width: 100%;
+                text-align: left;
+                padding: 1rem;
+                color: #333;
+                justify-content: space-between;
+            }
+
+            .dropdown-content {
+                position: static;
+                display: none;
+                width: 100%;
+                box-shadow: none;
+                background: #f8f8f8;
+                opacity: 1;
+                transform: none;
+                border: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .dropdown.active .dropdown-content {
+                display: block;
+            }
+
+            .dropdown-content a {
+                padding: 1rem 2rem;
+                border-radius: 0;
+            }
+
+            .dropdown-content a:hover {
+                transform: none;
+                padding-left: 2rem;
+            }
+
+            .dropdown-content a::after {
+                display: none;
+            }
+
+            .search-container {
+                padding: 1rem;
+                margin-top: 80px;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .map-container {
+                height: 300px;
+            }
+        }
+
+        /* Loading State */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #ff4d4d;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* No Results State */
+        .no-results {
+            display: none;
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 2rem;
+        }
+
+        .no-results h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .no-results p {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .no-results .suggestions {
+            text-align: left;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .no-results .suggestions li {
+            margin-bottom: 0.5rem;
+            color: #666;
+        }
+
+        /* Search Type Toggle */
+        .search-type-toggle {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+
+        .toggle-option {
+            flex: 1;
+            text-align: center;
+            padding: 1rem;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: #666;
+        }
+
+        .toggle-option.active {
+            background-color: #ff4d4d;
+            color: white;
+        }
+
+        .toggle-option:not(.active):hover {
+            background-color: #fff5f5;
+        }
+
+        /* Urgency Badge */
+        .urgency-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-left: 1rem;
+        }
+
+        .urgency-normal {
+            background-color: #e6ffed;
+            color: #38a169;
+        }
+
+        .urgency-urgent {
+            background-color: #fff5f5;
+            color: #e53e3e;
+        }
+
+        .urgency-emergency {
+            background-color: #ff4d4d;
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        /* Additional Recipient Fields */
+        .recipient-fields {
+            display: none;
+        }
+
+        .recipient-fields.active {
+            display: block;
+        }
+
+        .units-needed {
+            font-weight: 600;
+            color: #ff4d4d;
+        }
+
+        /* Medical Facility Styles */
+        .facility-selector {
+            margin-bottom: 1.5rem;
+        }
+
+        .facility-selector select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            color: #333;
+            background-color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1.2em;
+            padding-right: 2.5rem;
+        }
+
+        .facility-selector select:hover {
+            border-color: #ff4d4d;
+            background-color: #fff5f5;
+        }
+
+        .facility-selector select:focus {
+            outline: none;
+            border-color: #ff4d4d;
+            box-shadow: 0 0 0 3px rgba(255, 77, 77, 0.1);
+            background-color: white;
+        }
+
+        .facility-selector select option {
+            padding: 1rem;
+            font-size: 1.1rem;
+            background-color: white;
+            color: #333;
+        }
+
+        .facility-selector select option:checked {
+            background-color: #fff5f5;
+            color: #ff4d4d;
+            font-weight: 600;
+        }
+
+        /* Urgency Level Styles */
+        .urgency-level {
+            display: none;
+        }
+
+        .urgency-level.active {
+            display: block;
+        }
+
+        /* Emergency Notice Styles */
+        .emergency-notice {
+            background-color: #fff5f5;
+            border: 1px solid #ff4d4d;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .emergency-notice p {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .emergency-notice a {
+            color: #ff4d4d;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .emergency-notice a:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <!-- Thêm Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">BloodLife</div>
+            <button class="mobile-menu-button" id="mobileMenuButton">☰</button>
+            <div class="nav-links">
+                <a href="index.html">Trang Chủ</a>
+                <div class="dropdown">
+                    <button class="dropdown-btn">Dịch Vụ</button>
+                    <div class="dropdown-content">
+                        <a href="donate.html">Hiến Máu</a>
+                        <a href="blood-compatibility.html">Tương Thích</a>
+                        <a href="blood-search.html">Tìm Máu</a>
+                        <a href="emergency-request.html">Khẩn Cấp</a>
+                    </div>
+                </div>
+                <a href="index.html#contact">Liên Hệ</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Menu di động -->
+    <div class="mobile-nav" id="mobileNav">
+        <button class="close-button" id="closeMobileMenu">×</button>
+        <div class="mobile-nav-links">
+            <a href="index.html">Trang Chủ</a>
+            <div class="dropdown">
+                <button class="dropdown-btn">Dịch Vụ</button>
+                <div class="dropdown-content">
+                    <a href="donate.html">Hiến Máu</a>
+                    <a href="blood-compatibility.html">Tương Thích</a>
+                    <a href="blood-search.html">Tìm Máu</a>
+                    <a href="emergency-request.html">Khẩn Cấp</a>
+                </div>
+            </div>
+            <a href="index.html#contact">Liên Hệ</a>
+        </div>
+    </div>
+
+    <div class="search-container">
+        <div class="page-header">
+            <h1>Tìm Người Hiến & Người Nhận Máu</h1>
+            <p>Tìm kiếm người hiến máu hoặc người nhận máu gần các cơ sở y tế. Chọn cơ sở và nhóm máu để tìm kết quả phù hợp.</p>
+        </div>
+
+        <div class="emergency-notice">
+            <p><strong>Cần máu khẩn cấp?</strong> Nếu bạn cần máu gấp (trong vòng 24 giờ), vui lòng sử dụng <a href="emergency-request.html">Biểu Mẫu Yêu Cầu Khẩn Cấp</a>.</p>
+            <p>Chức năng tìm kiếm này dành cho nhu cầu máu thông thường và kiểm tra tình trạng máu.</p>
+        </div>
+
+        <div class="search-type-toggle">
+            <div class="toggle-option active" data-type="donors">Tìm Người Hiến</div>
+            <div class="toggle-option" data-type="recipients">Tìm Người Nhận</div>
+        </div>
+
+        <form class="search-form" id="searchForm">
+            <div class="form-group facility-selector">
+                <label for="facility">Cơ Sở Y Tế</label>
+                <select id="facility" name="facility" required>
+                    <option value="">Chọn cơ sở y tế...</option>
+                    <option value="city-general">Bệnh viện Đa khoa Thành phố</option>
+                    <option value="community-health">Trung tâm Y tế Cộng đồng</option>
+                    <option value="metropolitan">Trung tâm Y khoa Đô thị</option>
+                </select>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="bloodType">Nhóm Máu</label>
+                    <select id="bloodType" name="bloodType" required>
+                        <option value="">Chọn nhóm máu...</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="recipient-fields">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="unitsNeeded">Số Đơn Vị Cần</label>
+                        <input type="number" id="unitsNeeded" name="unitsNeeded" min="1" max="10" placeholder="Số đơn vị máu">
+                    </div>
+                    <div class="form-group">
+                        <label for="neededBy">Cần Trước Ngày</label>
+                        <input type="date" id="neededBy" name="neededBy">
+                    </div>
+                </div>
+                <div class="form-group urgency-level">
+                    <label for="urgency">Mức Độ Khẩn Cấp</label>
+                    <select id="urgency" name="urgency">
+                        <option value="normal">Bình thường (Không yêu cầu thời gian)</option>
+                        <option value="critical">Quan trọng (Cần trong 24 giờ)</option>
+                        <option value="urgent">Gấp (Cần trong 4 giờ)</option>
+                        <option value="emergency">Khẩn cấp (Cần trong 1 giờ)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="distance">Bán Kính Tìm Kiếm</label>
+                <input type="range" id="distance" name="distance" min="5" max="100" step="5" value="25" class="distance-slider">
+                <div class="distance-value">Trong vòng <span id="distanceValue">25</span> km</div>
+            </div>
+
+            <button type="submit" class="search-button">Tìm Kiếm</button>
+        </form>
+
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <p>Đang tìm kiếm người phù hợp trong khu vực của bạn...</p>
+        </div>
+
+        <div class="no-results" id="noResults">
+            <h3>Không Tìm Thấy Kết Quả</h3>
+            <p>Chúng tôi không tìm thấy người phù hợp với tiêu chí của bạn. Gợi ý:</p>
+            <ul class="suggestions">
+                <li>Thử tăng bán kính tìm kiếm</li>
+                <li>Kiểm tra các ngân hàng máu gần bạn</li>
+                <li>Liên hệ bệnh viện địa phương cho trường hợp khẩn cấp</li>
+                <li>Cân nhắc gửi yêu cầu khẩn cấp</li>
+            </ul>
+        </div>
+
+        <div class="search-results" id="searchResults">
+            <div class="results-header">
+                <h2>Kết Quả <span id="resultTypeLabel">Người Hiến</span></h2>
+                <div class="results-count">Tìm thấy <span id="resultCount">0</span> <span id="resultTypeLabel2">người hiến</span> trong khu vực của bạn</div>
+            </div>
+
+            <div class="map-container" id="map">
+                <div class="map-overlay">
+                    <div class="map-legend">
+                        <div class="legend-item">
+                            <div class="legend-marker marker-donor"></div>
+                            <span>Người hiến</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-marker marker-recipient"></div>
+                            <span>Người nhận</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-marker marker-urgent"></div>
+                            <span>Gấp</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-marker marker-emergency"></div>
+                            <span>Khẩn cấp</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="results-grid" id="resultsGrid">
+                <!-- Các thẻ kết quả sẽ được thêm động ở đây -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Đổi nhãn kết quả động khi chuyển loại tìm kiếm
+        const resultTypeLabel = document.getElementById('resultTypeLabel');
+        const resultTypeLabel2 = document.getElementById('resultTypeLabel2');
+
+        // Mobile menu functionality
+        const mobileMenuButton = document.getElementById('mobileMenuButton');
+        const closeMobileMenu = document.getElementById('closeMobileMenu');
+        const mobileNav = document.getElementById('mobileNav');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileNav.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        closeMobileMenu.addEventListener('click', () => {
+            mobileNav.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        document.querySelectorAll('.mobile-nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileNav.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+
+        // Distance slider functionality
+        const distanceSlider = document.getElementById('distance');
+        const distanceValue = document.getElementById('distanceValue');
+
+        distanceSlider.addEventListener('input', function() {
+            distanceValue.textContent = this.value;
+        });
+
+        // Search type toggle functionality
+        const toggleOptions = document.querySelectorAll('.toggle-option');
+        const recipientFields = document.querySelector('.recipient-fields');
+        const urgencyLevel = document.querySelector('.urgency-level');
+        const searchButton = document.querySelector('.search-button');
+        let currentSearchType = 'donors';
+
+        toggleOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                toggleOptions.forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
+                currentSearchType = this.dataset.type;
+                if (currentSearchType === 'recipients') {
+                    recipientFields.classList.add('active');
+                    urgencyLevel.classList.add('active');
+                    searchButton.textContent = 'Tìm Người Nhận';
+                    resultTypeLabel.textContent = 'Người Nhận';
+                    resultTypeLabel2.textContent = 'người nhận';
+                } else {
+                    recipientFields.classList.remove('active');
+                    urgencyLevel.classList.remove('active');
+                    searchButton.textContent = 'Tìm Người Hiến';
+                    resultTypeLabel.textContent = 'Người Hiến';
+                    resultTypeLabel2.textContent = 'người hiến';
+                }
+            });
+        });
+
+        // Medical facility locations
+        const medicalFacilities = {
+            'city-general': {
+                name: "City General Hospital",
+                location: { lat: 37.7749, lng: -122.4194 },
+                address: "Downtown Medical District, San Francisco, CA 94103",
+                phone: "+1 (555) 123-4567",
+                capacity: "500 beds",
+                specialties: ["Trauma", "Cardiac", "Neurology"],
+                hours: "24/7 Service"
+            },
+            'community-health': {
+                name: "Community Health Center",
+                location: { lat: 37.7833, lng: -122.4167 },
+                address: "Westside Community, San Francisco, CA 94102",
+                phone: "+1 (555) 234-5678",
+                capacity: "300 beds",
+                specialties: ["Pediatrics", "Orthopedics", "Oncology"],
+                hours: "Mon-Sat: 8AM-8PM"
+            },
+            'metropolitan': {
+                name: "Metropolitan Medical Center",
+                location: { lat: 37.7667, lng: -122.4167 },
+                address: "Eastside Medical Complex, San Francisco, CA 94107",
+                phone: "+1 (555) 345-6789",
+                capacity: "400 beds",
+                specialties: ["Emergency", "General Medicine", "Surgery"],
+                hours: "24/7 Service"
+            }
+        };
+
+        // Updated sample data with facility-based locations
+        const sampleData = {
+            donors: [
+                {
+                    id: 1,
+                    name: "John Smith",
+                    bloodType: "O+",
+                    facility: "city-general",
+                    lastDonation: "3 months ago",
+                    location: "Near City General Hospital",
+                    contact: "+1 (555) 123-4567",
+                    available: true,
+                    type: "donor",
+                    distance: 0.5
+                },
+                {
+                    id: 2,
+                    name: "Sarah Johnson",
+                    bloodType: "A-",
+                    facility: "community-health",
+                    lastDonation: "4 months ago",
+                    location: "Near Community Health Center",
+                    contact: "+1 (555) 234-5678",
+                    available: true,
+                    type: "donor",
+                    distance: 0.8
+                },
+                {
+                    id: 3,
+                    name: "Michael Brown",
+                    bloodType: "B+",
+                    facility: "metropolitan",
+                    lastDonation: "2 months ago",
+                    location: "Near Metropolitan Medical Center",
+                    contact: "+1 (555) 345-6789",
+                    available: true,
+                    type: "donor",
+                    distance: 0.3
+                }
+            ],
+            recipients: [
+                {
+                    id: 101,
+                    name: "City General Hospital - Trauma Unit",
+                    bloodType: "O-",
+                    facility: "city-general",
+                    unitsNeeded: 4,
+                    neededBy: "2024-03-20",
+                    urgency: "urgent",
+                    location: "City General Hospital",
+                    contact: medicalFacilities['city-general'].phone,
+                    type: "recipient",
+                    distance: 0
+                },
+                {
+                    id: 102,
+                    name: "Community Health Center - Regular Ward",
+                    bloodType: "AB+",
+                    facility: "community-health",
+                    unitsNeeded: 2,
+                    neededBy: "2024-03-19",
+                    urgency: "high-priority",
+                    location: "Community Health Center",
+                    contact: medicalFacilities['community-health'].phone,
+                    type: "recipient",
+                    distance: 0
+                },
+                {
+                    id: 103,
+                    name: "Metropolitan Medical Center - Surgery",
+                    bloodType: "A+",
+                    facility: "metropolitan",
+                    unitsNeeded: 3,
+                    neededBy: "2024-03-21",
+                    urgency: "normal",
+                    location: "Metropolitan Medical Center",
+                    contact: medicalFacilities['metropolitan'].phone,
+                    type: "recipient",
+                    distance: 0
+                }
+            ]
+        };
+
+        // Map variables
+        let map;
+        let markers = [];
+        let infoWindow;
+        let userLocation;
+
+        // Initialize map with medical facilities
+        function initMap() {
+            // Default to City General Hospital
+            const defaultCenter = medicalFacilities['city-general'].location;
+
+            // Create map
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 12,
+                center: defaultCenter,
+                styles: [
+                    {
+                        "featureType": "poi.medical",
+                        "elementType": "geometry",
+                        "stylers": [{"visibility": "on"}]
+                    }
+                ]
+            });
+
+            // Create info window
+            infoWindow = new google.maps.InfoWindow();
+
+            // Add facility markers
+            Object.entries(medicalFacilities).forEach(([key, facility]) => {
+                const marker = new google.maps.Marker({
+                    position: facility.location,
+                    map: map,
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        fillColor: '#4285F4',
+                        fillOpacity: 1,
+                        strokeWeight: 2,
+                        strokeColor: '#FFFFFF',
+                        scale: 12
+                    },
+                    title: facility.name
+                });
+
+                // Add click listener for facility info
+                marker.addListener('click', () => {
+                    infoWindow.setContent(`
+                        <div class="facility-info">
+                            <h3>${facility.name}</h3>
+                            <p><strong>Address:</strong> ${facility.address}</p>
+                            <p><strong>Phone:</strong> ${facility.phone}</p>
+                            <p><strong>Capacity:</strong> ${facility.capacity}</p>
+                            <p><strong>Hours:</strong> ${facility.hours}</p>
+                            <p><strong>Specialties:</strong> ${facility.specialties.join(', ')}</p>
+                        </div>
+                    `);
+                    infoWindow.open(map, marker);
+                });
+            });
+        }
+
+        // Function to create marker icon based on type and urgency
+        function createMarkerIcon(type, urgency) {
+            let color;
+            if (type === 'donor') {
+                color = '#4CAF50'; // Green for donors
+            } else {
+                if (urgency === 'emergency') {
+                    color = '#FF0000'; // Red for emergency
+                } else if (urgency === 'urgent') {
+                    color = '#FFA500'; // Orange for urgent
+                } else {
+                    color = '#FF4D4D'; // Red for normal recipients
+                }
+            }
+
+            return {
+                path: google.maps.SymbolPath.CIRCLE,
+                fillColor: color,
+                fillOpacity: 1,
+                strokeWeight: 2,
+                strokeColor: '#FFFFFF',
+                scale: 10
+            };
+        }
+
+        // Function to create marker content
+        function createMarkerContent(item) {
+            return `
+                <div class="marker-info">
+                    <h3>${item.name}</h3>
+                    <p><strong>Blood Type:</strong> ${item.bloodType}</p>
+                    <p><strong>Location:</strong> ${item.location}</p>
+                    ${item.type === 'donor' ? 
+                        `<p><strong>Last Donation:</strong> ${item.lastDonation}</p>` :
+                        `<p><strong>Units Needed:</strong> ${item.unitsNeeded}</p>
+                         <p><strong>Needed By:</strong> ${item.neededBy}</p>
+                         <p><strong>Urgency:</strong> ${item.urgency}</p>`
+                    }
+                    <p><strong>Contact:</strong> ${item.contact}</p>
+                    <button onclick="contactPerson(${item.id}, '${item.type}')" 
+                            style="background: #ff4d4d; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-top: 10px;">
+                        Contact ${item.type === 'donor' ? 'Donor' : 'Recipient'}
+                    </button>
+                </div>
+            `;
+        }
+
+        // Update map markers based on selected facility
+        function updateMapMarkers(results, facilityKey) {
+            // Clear existing markers
+            markers.forEach(marker => marker.setMap(null));
+            markers = [];
+
+            const facilityLocation = medicalFacilities[facilityKey].location;
+
+            // Add new markers
+            results.forEach(item => {
+                // Calculate position relative to facility
+                const lat = facilityLocation.lat + (Math.random() - 0.5) * 0.01;
+                const lng = facilityLocation.lng + (Math.random() - 0.5) * 0.01;
+
+                const marker = new google.maps.Marker({
+                    position: { lat, lng },
+                    map: map,
+                    icon: createMarkerIcon(item.type, item.urgency),
+                    title: item.name
+                });
+
+                // Add click listener
+                marker.addListener('click', () => {
+                    infoWindow.setContent(createMarkerContent(item));
+                    infoWindow.open(map, marker);
+                });
+
+                markers.push(marker);
+            });
+
+            // Center map on selected facility
+            map.setCenter(facilityLocation);
+            map.setZoom(14);
+        }
+
+        // Update search form handling
+        searchForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            loading.style.display = 'block';
+            searchResults.style.display = 'none';
+            noResults.style.display = 'none';
+            
+            const facility = document.getElementById('facility').value;
+            const bloodType = document.getElementById('bloodType').value;
+            const distance = document.getElementById('distance').value;
+            const urgency = currentSearchType === 'recipients' ? document.getElementById('urgency').value : null;
+            
+            if (!facility) {
+                alert('Vui lòng chọn cơ sở y tế');
+                loading.style.display = 'none';
+                return;
+            }
+            
+            setTimeout(() => {
+                const dataToSearch = currentSearchType === 'donors' ? sampleData.donors : sampleData.recipients;
+                const filteredResults = dataToSearch.filter(item => 
+                    item.facility === facility &&
+                    item.bloodType === bloodType && 
+                    item.distance <= distance &&
+                    (currentSearchType === 'donors' || item.urgency === urgency)
+                );
+                
+                loading.style.display = 'none';
+                
+                if (filteredResults.length === 0) {
+                    noResults.style.display = 'block';
+                    return;
+                }
+                
+                resultCount.textContent = filteredResults.length;
+                resultsGrid.innerHTML = '';
+                
+                // Update map markers
+                updateMapMarkers(filteredResults, facility);
+                
+                // Add result cards
+                filteredResults.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'result-card';
+                    
+                    let urgencyBadge = '';
+                    if (item.type === 'recipient') {
+                        const urgencyClass = `urgency-${item.urgency}`;
+                        let urgencyText = '';
+                        switch(item.urgency) {
+                            case 'emergency': urgencyText = 'Khẩn cấp'; break;
+                            case 'urgent': urgencyText = 'Gấp'; break;
+                            case 'critical': urgencyText = 'Quan trọng'; break;
+                            default: urgencyText = 'Bình thường';
+                        }
+                        urgencyBadge = `<span class="urgency-badge ${urgencyClass}">${urgencyText}</span>`;
+                    }
+                    
+                    card.innerHTML = `
+                        <h3>
+                            ${item.name}
+                            ${urgencyBadge}
+                            <span class="distance">${item.distance} km từ ${medicalFacilities[facility].name}</span>
+                        </h3>
+                        <div class="details">
+                            <div class="detail-item">
+                                <span class="detail-label">Nhóm máu</span>
+                                <span class="detail-value">${item.bloodType}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Vị trí</span>
+                                <span class="detail-value">${item.location}</span>
+                            </div>
+                            ${item.type === 'donor' ? `
+                                <div class="detail-item">
+                                    <span class="detail-label">Lần hiến gần nhất</span>
+                                    <span class="detail-value">${item.lastDonation}</span>
+                                </div>
+                            ` : `
+                                <div class="detail-item">
+                                    <span class="detail-label">Số đơn vị cần</span>
+                                    <span class="detail-value units-needed">${item.unitsNeeded}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Cần trước ngày</span>
+                                    <span class="detail-value">${item.neededBy}</span>
+                                </div>
+                            `}
+                            <div class="detail-item">
+                                <span class="detail-label">Liên hệ</span>
+                                <span class="detail-value">${item.contact}</span>
+                            </div>
+                        </div>
+                        <button class="contact-button" onclick="contactPerson(${item.id}, '${item.type}')">
+                            ${item.type === 'donor' ? 'Liên hệ người hiến' : 'Liên hệ người nhận'}
+                        </button>
+                    `;
+                    resultsGrid.appendChild(card);
+                });
+                
+                searchResults.style.display = 'block';
+                searchResults.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 1500);
+        });
+
+        function contactPerson(id, type) {
+            alert(`Chức năng liên hệ ${type === 'donor' ? 'người hiến' : 'người nhận'} sẽ được triển khai ở đây. ID: ${id}`);
+        }
+
+        // Kiểm tra trạng thái đăng nhập khi tải trang
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = auth.getCurrentUser();
+            if (!currentUser) {
+                localStorage.setItem('redirectAfterLogin', window.location.href);
+                window.location.href = 'login.html';
+            }
+            if (typeof updateUserProfile === 'function') {
+                updateUserProfile();
+            }
+            const authButtons = document.getElementById('authButtons');
+            const mobileAuthButtons = document.getElementById('mobileAuthButtons');
+            if (currentUser) {
+                if (authButtons) authButtons.style.display = 'none';
+                if (mobileAuthButtons) mobileAuthButtons.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Hỗ Trợ Hiến Máu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: #ff4d4d;
+            color: white;
+            padding: 1rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1.5rem;
+            margin-left: 2rem;
+        }
+
+        .auth-button {
+            padding: 0.7rem 1.8rem;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+        }
+
+        .login-btn {
+            background-color: #ff4d4d;
+            color: white;
+            border-color: #ff4d4d;
+        }
+
+        .login-btn:hover {
+            background-color: white;
+            color: #ff4d4d;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .register-btn {
+            background-color: #ff4d4d;
+            color: white;
+            border-color: #ff4d4d;
+        }
+
+        .register-btn:hover {
+            background-color: white;
+            color: #ff4d4d;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Remove the shine effect since we're using a different hover style */
+        .login-btn::before, .register-btn::before {
+            display: none;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1615461066841-6116e61058f4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            padding: 0 1rem;
+        }
+
+        .hero-content {
+            max-width: 800px;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .cta-button {
+            background-color: #ff4d4d;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .cta-button:hover {
+            background-color: #ff3333;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 5rem 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .features h2 {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #333;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .feature-card h3 {
+            color: #ff4d4d;
+            margin-bottom: 1rem;
+        }
+
+        /* Medical Facilities Section */
+        .medical-facilities {
+            padding: 5rem 1rem;
+            background-color: #f8f9fa;
+        }
+
+        .medical-facilities h2 {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #333;
+        }
+
+        .facilities-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .facility-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .facility-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .facility-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .facility-content {
+            padding: 1.5rem;
+        }
+
+        .facility-content h3 {
+            color: #ff4d4d;
+            margin-bottom: 0.5rem;
+        }
+
+        .facility-content p {
+            color: #666;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .facility-details {
+            display: flex;
+            justify-content: space-between;
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        /* Blood Types Section */
+        .blood-types {
+            padding: 5rem 1rem;
+            background-color: white;
+            position: relative;
+        }
+
+        .blood-types h2 {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #333;
+        }
+
+        .blood-types-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            padding: 0 40px;
+            overflow: hidden; /* Hide overflow to prevent horizontal scrollbar */
+        }
+
+        .blood-types-grid {
+            display: flex;
+            gap: 2rem;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            padding: 1rem 0;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+            scroll-snap-type: x mandatory;
+            width: 100%;
+        }
+
+        .blood-types-grid::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
+
+        .blood-type-card {
+            background: #fff5f5;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            border: 2px solid #ff4d4d;
+            transition: transform 0.3s ease;
+            flex: 0 0 calc((100% - 4rem) / 3); /* Exactly 3 cards with 2rem gap between them */
+            scroll-snap-align: start;
+            height: 400px; /* Fixed height for consistency */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .scroll-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #ff4d4d;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 2;
+            transition: background-color 0.3s ease;
+        }
+
+        .scroll-button:hover {
+            background: #ff3333;
+        }
+
+        .scroll-button.left {
+            left: 0;
+        }
+
+        .scroll-button.right {
+            right: 0;
+        }
+
+        .scroll-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .blood-type-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .blood-type-card.negative {
+            background: #fff0f0;
+            border-color: #ff6b6b;
+        }
+
+        .blood-type-card h3 {
+            color: #ff4d4d;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+
+        .blood-type-card.negative h3 {
+            color: #ff6b6b;
+        }
+
+        .blood-type-card p {
+            color: #666;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        .compatibility-list {
+            text-align: left;
+            margin-top: 1rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .compatibility-list h4 {
+            color: #333;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .compatibility-list li {
+            color: #666;
+            margin-bottom: 0.5rem;
+            list-style-type: none;
+            padding-left: 1.5rem;
+            position: relative;
+            font-size: 0.95rem;
+        }
+
+        .blood-info-box {
+            background: linear-gradient(135deg, #f0fff4 0%, #e6ffed 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 3rem auto;
+            border: 2px solid #38a169;
+            box-shadow: 0 4px 20px rgba(56, 161, 105, 0.1);
+            position: relative;
+            overflow: hidden;
+            max-width: 800px;
+        }
+
+        .blood-info-box::before {
+            content: "ℹ️";
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2rem;
+            opacity: 0.2;
+        }
+
+        .blood-info-box h3 {
+            color: #2f855a;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            text-align: center;
+            position: relative;
+            padding-bottom: 0.8rem;
+            font-weight: 700;
+        }
+
+        .blood-info-box h3::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: #38a169;
+            border-radius: 2px;
+        }
+
+        .blood-info-box ul {
+            list-style-type: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .blood-info-box li {
+            color: #2d3748;
+            margin-bottom: 0;
+            padding: 0.8rem 1.2rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(56, 161, 105, 0.05);
+            display: flex;
+            align-items: center;
+            transition: transform 0.3s ease;
+            font-weight: 600;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .blood-info-box li:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(56, 161, 105, 0.1);
+        }
+
+        .blood-info-box li::before {
+            content: "✓";
+            color: #38a169;
+            font-weight: bold;
+            margin-right: 0.8rem;
+            font-size: 1.1rem;
+            min-width: 20px;
+            height: 20px;
+            background: #f0fff4;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .blood-info-box .highlight {
+            background: #fff;
+            padding: 1.2rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+            border-left: 4px solid #38a169;
+            grid-column: 1 / -1;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .blood-info-box .highlight p {
+            color: #2f855a;
+            font-weight: 700;
+            margin: 0;
+            font-size: 1rem;
+            line-height: 1.4;
+        }
+
+        /* Emergency Section */
+        .emergency {
+            background: linear-gradient(135deg, #ff4d4d 0%, #ff3333 100%);
+            padding: 4rem 1rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(255, 77, 77, 0.2);
+        }
+
+        .emergency h2 {
+            color: white;
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .emergency p {
+            color: white;
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        .emergency-button {
+            background: white;
+            color: #ff4d4d;
+            padding: 1.2rem 3rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-decoration: none;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .emergency-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            background: #fff;
+        }
+
+        .emergency-button:active {
+            transform: translateY(-1px);
+        }
+
+        .emergency-alert {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+            display: inline-block;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .emergency-alert p {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 3rem 1rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: white;
+            text-decoration: none;
+        }
+
+        /* Mobile Navigation */
+        .mobile-menu-button {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            padding: 2rem;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .mobile-nav.active {
+            transform: translateX(0);
+        }
+
+        .mobile-nav .close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .mobile-nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .mobile-nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .mobile-auth-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links, .auth-buttons {
+                display: none;
+            }
+
+            .mobile-menu-button {
+                display: block;
+            }
+
+            .mobile-nav {
+                display: block;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .blood-info-box ul {
+                grid-template-columns: 1fr;
+            }
+            
+            .blood-info-box {
+                margin: 3rem 1rem;
+            }
+
+            .emergency h2 {
+                font-size: 2rem;
+            }
+
+            .emergency-button {
+                padding: 1rem 2rem;
+                font-size: 1.1rem;
+            }
+
+            .facility-details {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .nav-links a[href^="#"] {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a[href^="#"]::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: white;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a[href^="#"]:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a[href^="#"].active::after {
+            width: 100%;
+        }
+
+        /* Add smooth scroll offset for fixed header */
+        section[id] {
+            scroll-margin-top: 80px;
+        }
+
+        /* Dropdown styles */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+
+        .dropdown-btn::after {
+            content: '▼';
+            font-size: 0.7rem;
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown:hover .dropdown-btn::after {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-btn:hover {
+            color: #ff4d4d;
+            transform: translateY(-1px);
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            min-width: 220px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            border-radius: 12px;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 77, 77, 0.1);
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .dropdown-content a {
+            color: #333;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dropdown-content a::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: #ff4d4d;
+            transform: scaleY(0);
+            transition: transform 0.2s ease;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #fff5f5;
+            color: #ff4d4d;
+            transform: translateX(5px);
+            padding-left: 20px;
+        }
+
+        .dropdown-content a:hover::before {
+            transform: scaleY(1);
+        }
+
+        .dropdown-content a::after {
+            content: '→';
+            position: absolute;
+            right: 16px;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-content a:hover::after {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Update mobile menu styles */
+        @media (max-width: 768px) {
+            .dropdown {
+                width: 100%;
+            }
+
+            .dropdown-btn {
+                width: 100%;
+                text-align: left;
+                padding: 1rem;
+                color: #333;
+                justify-content: space-between;
+            }
+
+            .dropdown-content {
+                position: static;
+                display: none;
+                width: 100%;
+                box-shadow: none;
+                background: #f8f8f8;
+                opacity: 1;
+                transform: none;
+                border: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .dropdown.active .dropdown-content {
+                display: block;
+            }
+
+            .dropdown-content a {
+                padding: 1rem 2rem;
+                border-radius: 0;
+            }
+
+            .dropdown-content a:hover {
+                transform: none;
+                padding-left: 2rem;
+            }
+
+            .dropdown-content a::after {
+                display: none;
+            }
+        }
+    </style>
+    <!-- Thêm Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">BloodLife</div>
+            <button class="mobile-menu-button" id="mobileMenuButton">☰</button>
+            <div class="nav-links">
+                <a href="index.html">Trang Chủ</a>
+                <div class="dropdown">
+                    <button class="dropdown-btn">Dịch Vụ</button>
+                    <div class="dropdown-content">
+                        <a href="donate.html">Hiến Máu</a>
+                        <a href="blood-compatibility.html">Tương Thích</a>
+                        <a href="blood-search.html">Tìm Máu</a>
+                        <a href="emergency-request.html">Khẩn Cấp</a>
+                    </div>
+                </div>
+                <a href="index.html#contact">Liên Hệ</a>
+                <!-- Nút đăng nhập/đăng ký -->
+                <div class="auth-buttons" id="authButtons">
+                    <a href="login.html" class="auth-button login-btn">Đăng Nhập</a>
+                    <a href="register.html" class="auth-button register-btn">Đăng Ký</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Menu di động -->
+    <div class="mobile-nav" id="mobileNav">
+        <button class="close-button" id="closeMobileMenu">×</button>
+        <div class="mobile-nav-links">
+            <a href="index.html">Trang Chủ</a>
+            <div class="dropdown">
+                <button class="dropdown-btn">Dịch Vụ</button>
+                <div class="dropdown-content">
+                    <a href="donate.html">Hiến Máu</a>
+                    <a href="blood-compatibility.html">Tương Thích</a>
+                    <a href="blood-search.html">Tìm Máu</a>
+                    <a href="emergency-request.html">Khẩn Cấp</a>
+                </div>
+            </div>
+            <a href="index.html#contact">Liên Hệ</a>
+            <div class="mobile-auth-buttons" id="mobileAuthButtons">
+                <a href="login.html" class="auth-button login-btn">Đăng Nhập</a>
+                <a href="register.html" class="auth-button register-btn">Đăng Ký</a>
+            </div>
+        </div>
+    </div>
+
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>Cứu Người Nhờ Hiến Máu</h1>
+            <p>Mỗi giọt máu cho đi là một cuộc đời ở lại. Hãy cùng chúng tôi đảm bảo nguồn máu ổn định cho những người cần.</p>
+            <a href="donate.html"><button class="cta-button">Đặt Lịch Hiến Máu</button></a>
+        </div>
+    </section>
+
+    <section class="features" id="about">
+        <h2>Tại Sao Nên Hiến Máu?</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3>Cứu Sống Người Khác</h3>
+                <p>Mỗi lần hiến máu có thể cứu được tới ba người. Máu của bạn có thể là sự sống cho người khác.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Quy Trình Đơn Giản</h3>
+                <p>Quy trình hiến máu đơn giản, an toàn và chỉ mất khoảng một giờ đồng hồ.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Nhu Cầu Thường Xuyên</h3>
+                <p>Mỗi 2 giây lại có người cần truyền máu. Hiến máu thường xuyên giúp duy trì nguồn máu ổn định.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Lợi Ích Sức Khỏe</h3>
+                <p>Hiến máu giúp giảm nguy cơ bệnh tim mạch và kích thích sản sinh tế bào máu mới.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cơ sở y tế -->
+    <section class="medical-facilities">
+        <h2>Cơ Sở Y Tế Đối Tác</h2>
+        <div class="facilities-container">
+            <article class="facility-card">
+                <img src="https://images.unsplash.com/photo-1538108149393-fbbd81895907?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
+                     alt="Bệnh viện Đa khoa Thành phố" 
+                     class="facility-image"
+                     loading="lazy">
+                <div class="facility-content">
+                    <h3>Bệnh viện Đa khoa Thành phố</h3>
+                    <p>Trung tâm y tế hàng đầu với trang thiết bị hiện đại và ngân hàng máu chuyên biệt. Dịch vụ cấp cứu 24/7 đáp ứng kịp thời mọi nhu cầu về máu.</p>
+                    <div class="facility-details">
+                        <span>📍 Khu Y tế Trung tâm</span>
+                        <span>🕒 24/7</span>
+                    </div>
+                </div>
+            </article>
+
+            <article class="facility-card">
+                <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
+                     alt="Trung tâm Y tế Cộng đồng" 
+                     class="facility-image"
+                     loading="lazy">
+                <div class="facility-content">
+                    <h3>Trung tâm Y tế Cộng đồng</h3>
+                    <p>Chuyên chăm sóc sức khỏe cộng đồng, tập trung vào dịch vụ hiến máu. Thường xuyên tổ chức các đợt hiến máu lưu động phục vụ các khu vực dân cư.</p>
+                    <div class="facility-details">
+                        <span>📍 Khu dân cư phía Tây</span>
+                        <span>🕒 Thứ 2 - Thứ 7: 8h-20h</span>
+                    </div>
+                </div>
+            </article>
+
+            <article class="facility-card">
+                <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
+                     alt="Trung tâm Y khoa Đô thị" 
+                     class="facility-image"
+                     loading="lazy">
+                <div class="facility-content">
+                    <h3>Trung tâm Y khoa Đô thị</h3>
+                    <p>Cơ sở y tế hiện đại với dịch vụ truyền máu chuyên sâu. Có ngân hàng máu và trung tâm nghiên cứu về máu tiên tiến.</p>
+                    <div class="facility-details">
+                        <span>📍 Khu Y tế phía Đông</span>
+                        <span>🕒 24/7</span>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- Nhóm máu -->
+    <section class="blood-types">
+        <h2>Tìm Hiểu Về Nhóm Máu</h2>
+        <div class="blood-types-container">
+            <button class="scroll-button left" onclick="scrollBloodTypes('left')">←</button>
+            <div class="blood-types-grid">
+                <!-- Nhóm máu dương -->
+                <div class="blood-type-card">
+                    <h3>A+</h3>
+                    <p>Có thể cho: A+, AB+</p>
+                    <p>Có thể nhận từ: A+, A-, O+, O-</p>
+                    <div class="compatibility-list">
+                        <h4>Thông tin nổi bật:</h4>
+                        <li>Nhóm máu phổ biến thứ hai</li>
+                        <li>Người hiến tiểu cầu phổ quát</li>
+                        <li>Nhu cầu huyết tương cao</li>
+                    </div>
+                </div>
+
+                <div class="blood-type-card">
+                    <h3>B+</h3>
+                    <p>Có thể cho: B+, AB+</p>
+                    <p>Có thể nhận từ: B+, B-, O+, O-</p>
+                    <div class="compatibility-list">
+                        <h4>Thông tin nổi bật:</h4>
+                        <li>Nhóm máu phổ biến thứ ba</li>
+                        <li>Quan trọng cho bệnh nhân B+ và AB+</li>
+                        <li>Huyết tương có thể giúp bệnh nhân A và AB</li>
+                    </div>
+                </div>
+
+                <div class="blood-type-card">
+                    <h3>AB+</h3>
+                    <p>Có thể cho: Chỉ AB+</p>
+                    <p>Có thể nhận từ: Tất cả các nhóm máu</p>
+                    <div class="compatibility-list">
+                        <h4>Thông tin nổi bật:</h4>
+                        <li>Người nhận máu phổ quát</li>
+                        <li>Nhóm máu hiếm nhất</li>
+                        <li>Người hiến huyết tương phổ quát</li>
+                    </div>
+                </div>
+
+                <div class="blood-type-card">
+                    <h3>O+</h3>
+                    <p>Có thể cho: Tất cả nhóm máu dương</p>
+                    <p>Có thể nhận từ: O+, O-</p>
+                    <div class="compatibility-list">
+                        <h4>Thông tin nổi bật:</h4>
+                        <li>Nhóm máu phổ biến nhất</li>
+                        <li>Nhu cầu truyền máu cao</li>
+                        <li>Người hiến hồng cầu phổ quát cho nhóm dương</li>
+                    </div>
+                </div>
+
+                <!-- Nhóm máu âm -->
+                <div class="blood-type-card negative">
+                    <h3>A-</h3>
+                    <p>Có thể cho: A+, A-, AB+, AB-</p>
+                    <p>Có thể nhận từ: A-, O-</p>
+                    <div class="compatibility-list">
+                        <h4>Thông tin nổi bật:</h4>
+                        <li>Nhóm máu hiếm</li>
+                        <li>Quan trọng cho bệnh nhân A- và AB-</li>
+                        <li>Nhu cầu truyền máu cao</li>
+                    </div>
+                </div>
+
+                <div class="blood-type-card negative">
+                    <h3>B-</h3>
+                    <p>Có thể cho: B+, B-, AB+, AB-</p>
+                    <p>Có thể nhận từ: B-, O-</p>
+                    <div class="compatibility-list">
+                        <h4>Thông tin nổi bật:</h4>
+                        <li>Nhóm máu rất hiếm</li>
+                        <li>Quan trọng cho bệnh nhân B- và AB-</li>
+                        <li>Huyết tương có thể giúp bệnh nhân B và AB</li>
+                    </div>
+                </div>
+
+                <div class="blood-type-card negative">
+                    <h3>AB-</h3>
+                    <p>Có thể cho: AB+, AB-</p>
+                    <p>Có thể nhận từ: Tất cả nhóm máu âm</p>
+                    <div class="compatibility-list">
+                        <h4>Thông tin nổi bật:</h4>
+                        <li>Nhóm máu hiếm nhất</li>
+                        <li>Người hiến huyết tương phổ quát</li>
+                        <li>Có thể nhận từ tất cả nhóm máu âm</li>
+                    </div>
+                </div>
+
+                <div class="blood-type-card negative">
+                    <h3>O-</h3>
+                    <p>Có thể cho: Tất cả các nhóm máu</p>
+                    <p>Có thể nhận từ: Chỉ O-</p>
+                    <div class="compatibility-list">
+                        <h4>Thông tin nổi bật:</h4>
+                        <li>Người hiến máu phổ quát</li>
+                        <li>Nhóm máu cần thiết nhất</li>
+                        <li>Quan trọng trong cấp cứu</li>
+                    </div>
+                </div>
+            </div>
+            <button class="scroll-button right" onclick="scrollBloodTypes('right')">→</button>
+        </div>
+
+        <div class="blood-info-box">
+            <h3>Lưu Ý Khi Hiến Máu</h3>
+            <ul>
+                <li>Bạn phải từ 17 tuổi trở lên và nặng ít nhất 50kg</li>
+                <li>Cách ít nhất 56 ngày giữa hai lần hiến máu toàn phần</li>
+                <li>Mang theo giấy tờ tùy thân có ảnh khi đi hiến máu</li>
+                <li>Ăn uống đầy đủ và uống nhiều nước trước khi hiến máu</li>
+                <li>Ngủ đủ giấc vào đêm trước khi hiến máu</li>
+                <li>Tránh vận động mạnh trong 24h sau khi hiến máu</li>
+                <li>Thông báo cho nhân viên y tế về các loại thuốc đang sử dụng</li>
+                <li>Mặc quần áo thoải mái, tay áo dễ xắn lên</li>
+                <div class="highlight">
+                    <p>⚠️ Lưu ý: Nhóm máu âm (đặc biệt O-) rất cần thiết trong cấp cứu. Một lần hiến máu có thể cứu nhiều người!</p>
+                </div>
+            </ul>
+        </div>
+    </section>
+
+    <section class="emergency" id="donate">
+        <h2>Yêu Cầu Máu Khẩn Cấp</h2>
+        <p>Bạn cần máu gấp? Đội ngũ phản ứng nhanh của chúng tôi luôn sẵn sàng 24/7 để hỗ trợ bạn tìm nguồn máu phù hợp.</p>
+        <a href="emergency-request.html"><button class="emergency-button">Yêu Cầu Ngay</button></a>
+        <div class="emergency-alert">
+            <p>Thời gian phản hồi trung bình: &lt; 15 phút</p>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Liên Hệ</h3>
+                <ul>
+                    <li>Khẩn cấp: 1800-BLOOD</li>
+                    <li>Email: help@bloodlife.com</li>
+                    <li>Địa chỉ: 123 Đường Sức Khỏe</li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Liên Kết Nhanh</h3>
+                <ul>
+                    <li><a href="#home">Trang Chủ</a></li>
+                    <li><a href="#about">Giới Thiệu</a></li>
+                    <li><a href="#donate">Hiến Máu</a></li>
+                    <li><a href="#contact">Liên Hệ</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Kết Nối Với Chúng Tôi</h3>
+                <ul>
+                    <li><a href="#">Facebook</a></li>
+                    <li><a href="#">Twitter</a></li>
+                    <li><a href="#">Instagram</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+    <!-- Thêm scripts -->
+    <script src="js/auth.js"></script>
+    <script src="js/navbar.js"></script>
+    <script>
+        let autoScrollInterval;
+        const SCROLL_INTERVAL = 3000; // 3 seconds between scrolls
+        const SCROLL_AMOUNT = document.querySelector('.blood-type-card').offsetWidth + 32; // Card width + gap
+
+        function startAutoScroll() {
+            autoScrollInterval = setInterval(() => {
+                const container = document.querySelector('.blood-types-grid');
+                const maxScroll = container.scrollWidth - container.clientWidth;
+                
+                if (container.scrollLeft >= maxScroll) {
+                    // If we've reached the end, scroll back to start
+                    container.scrollTo({
+                        left: 0,
+                        behavior: 'smooth'
+                    });
+                } else {
+                    // Otherwise, scroll by exactly one card width
+                    container.scrollBy({
+                        left: SCROLL_AMOUNT,
+                        behavior: 'smooth'
+                    });
+                }
+                updateScrollButtons();
+            }, SCROLL_INTERVAL);
+        }
+
+        function stopAutoScroll() {
+            clearInterval(autoScrollInterval);
+        }
+
+        function scrollBloodTypes(direction) {
+            const container = document.querySelector('.blood-types-grid');
+            
+            if (direction === 'left') {
+                container.scrollBy({
+                    left: -SCROLL_AMOUNT,
+                    behavior: 'smooth'
+                });
+            } else {
+                container.scrollBy({
+                    left: SCROLL_AMOUNT,
+                    behavior: 'smooth'
+                });
+            }
+
+            // Reset auto-scroll timer when manually scrolling
+            stopAutoScroll();
+            startAutoScroll();
+            updateScrollButtons();
+        }
+
+        function updateScrollButtons() {
+            const container = document.querySelector('.blood-types-grid');
+            const leftButton = document.querySelector('.scroll-button.left');
+            const rightButton = document.querySelector('.scroll-button.right');
+
+            leftButton.disabled = container.scrollLeft <= 0;
+            rightButton.disabled = container.scrollLeft >= container.scrollWidth - container.clientWidth;
+        }
+
+        // Initialize auto-scroll
+        document.addEventListener('DOMContentLoaded', () => {
+            startAutoScroll();
+            
+            // Pause auto-scroll on hover
+            const container = document.querySelector('.blood-types-container');
+            container.addEventListener('mouseenter', stopAutoScroll);
+            container.addEventListener('mouseleave', startAutoScroll);
+
+            // Update button states on scroll
+            document.querySelector('.blood-types-grid').addEventListener('scroll', updateScrollButtons);
+            
+            // Initial button state update
+            updateScrollButtons();
+        });
+
+        // Clean up interval when leaving the page
+        window.addEventListener('beforeunload', stopAutoScroll);
+
+        // Update scroll amount on window resize
+        window.addEventListener('resize', () => {
+            const SCROLL_AMOUNT = document.querySelector('.blood-type-card').offsetWidth + 32;
+        });
+
+        // Mobile menu functionality
+        const mobileMenuButton = document.getElementById('mobileMenuButton');
+        const closeMobileMenu = document.getElementById('closeMobileMenu');
+        const mobileNav = document.getElementById('mobileNav');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileNav.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        closeMobileMenu.addEventListener('click', () => {
+            mobileNav.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.mobile-nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileNav.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+
+        // Update the smooth scroll code
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                // Remove active class from all nav links
+                document.querySelectorAll('.nav-links a[href^="#"]').forEach(link => {
+                    link.classList.remove('active');
+                });
+                
+                // Add active class to clicked link
+                this.classList.add('active');
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    // Calculate the position to scroll to
+                    const headerOffset = 80; // Height of fixed header
+                    const elementPosition = targetElement.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                    // Smooth scroll to the target
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Update URL without page reload
+                    history.pushState(null, '', targetId);
+                }
+            });
+        });
+
+        // Add active class based on scroll position
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section[id]');
+            const scrollPosition = window.scrollY + 100; // Add offset for better detection
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                const sectionId = section.getAttribute('id');
+                
+                if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                    document.querySelectorAll('.nav-links a[href^="#"]').forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${sectionId}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        });
+
+        // Add dropdown functionality for mobile
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropdownBtn = document.querySelector('.dropdown-btn');
+            const dropdown = document.querySelector('.dropdown');
+            
+            if (dropdownBtn && window.innerWidth <= 768) {
+                dropdownBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    dropdown.classList.toggle('active');
+                });
+            }
+        });
+    </script>
+
+    <section class="emergency" id="donate">
+        <h2>Yêu Cầu Máu Khẩn Cấp</h2>
+        <p>Bạn cần máu gấp? Đội ngũ phản ứng nhanh của chúng tôi luôn sẵn sàng 24/7 để hỗ trợ bạn tìm nguồn máu phù hợp.</p>
+        <a href="emergency-request.html"><button class="emergency-button">Yêu Cầu Ngay</button></a>
+        <div class="emergency-alert">
+            <p>Thời gian phản hồi trung bình: &lt; 15 phút</p>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Liên Hệ</h3>
+                <ul>
+                    <li>Khẩn cấp: 1800-BLOOD</li>
+                    <li>Email: help@bloodlife.com</li>
+                    <li>Địa chỉ: 123 Đường Sức Khỏe</li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Liên Kết Nhanh</h3>
+                <ul>
+                    <li><a href="#home">Trang Chủ</a></li>
+                    <li><a href="#about">Giới Thiệu</a></li>
+                    <li><a href="#donate">Hiến Máu</a></li>
+                    <li><a href="#contact">Liên Hệ</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Kết Nối Với Chúng Tôi</h3>
+                <ul>
+                    <li><a href="#">Facebook</a></li>
+                    <li><a href="#">Twitter</a></li>
+                    <li><a href="#">Instagram</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+    <!-- Thêm scripts -->
+    <script src="js/auth.js"></script>
+    <script src="js/navbar.js"></script>
+    <script>
+        // Check authentication status on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof auth !== 'undefined') {
+                const currentUser = auth.getCurrentUser();
+                const authButtons = document.getElementById('authButtons');
+                const userProfile = document.getElementById('userProfile');
+
+                if (currentUser) {
+                    // User is logged in
+                    if (authButtons) authButtons.style.display = 'none';
+                    if (userProfile) {
+                        userProfile.style.display = 'block';
+                        if (typeof updateUserProfile === 'function') {
+                            updateUserProfile();
+                        }
+                    }
+                } else {
+                    // User is not logged in
+                    if (authButtons) authButtons.style.display = 'flex';
+                    if (userProfile) userProfile.style.display = 'none';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

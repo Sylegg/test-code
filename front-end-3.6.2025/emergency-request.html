@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yêu Cầu Máu Khẩn Cấp - BloodLife</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #fff5f5;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: #ff4d4d;
+            color: white;
+            padding: 1rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* Mobile Navigation */
+        .mobile-menu-button {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            padding: 2rem;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .mobile-nav.active {
+            transform: translateX(0);
+        }
+
+        .mobile-nav .close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .mobile-nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .mobile-nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Dropdown styles */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+
+        .dropdown-btn::after {
+            content: '▼';
+            font-size: 0.7rem;
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown:hover .dropdown-btn::after {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-btn:hover {
+            color: #ff4d4d;
+            transform: translateY(-1px);
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            min-width: 220px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            border-radius: 12px;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 77, 77, 0.1);
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .dropdown-content a {
+            color: #333;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dropdown-content a::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: #ff4d4d;
+            transform: scaleY(0);
+            transition: transform 0.2s ease;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #fff5f5;
+            color: #ff4d4d;
+            transform: translateX(5px);
+            padding-left: 20px;
+        }
+
+        .dropdown-content a:hover::before {
+            transform: scaleY(1);
+        }
+
+        .dropdown-content a::after {
+            content: '→';
+            position: absolute;
+            right: 16px;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-content a:hover::after {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Update mobile menu styles */
+        @media (max-width: 768px) {
+            .nav-links, .auth-buttons {
+                display: none;
+            }
+
+            .mobile-menu-button {
+                display: block;
+            }
+
+            .mobile-nav {
+                display: block;
+            }
+
+            .dropdown {
+                width: 100%;
+            }
+
+            .dropdown-btn {
+                width: 100%;
+                text-align: left;
+                padding: 1rem;
+                color: #333;
+                justify-content: space-between;
+            }
+
+            .dropdown-content {
+                position: static;
+                display: none;
+                width: 100%;
+                box-shadow: none;
+                background: #f8f8f8;
+                opacity: 1;
+                transform: none;
+                border: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .dropdown.active .dropdown-content {
+                display: block;
+            }
+
+            .dropdown-content a {
+                padding: 1rem 2rem;
+                border-radius: 0;
+            }
+
+            .dropdown-content a:hover {
+                transform: none;
+                padding-left: 2rem;
+            }
+
+            .dropdown-content a::after {
+                display: none;
+            }
+        }
+
+        /* Emergency Container */
+        .emergency-container {
+            max-width: 1200px;
+            margin: 100px auto 40px;
+            padding: 2rem;
+        }
+
+        /* Emergency Header */
+        .emergency-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: pulse 2s infinite;
+        }
+
+        .emergency-header h1 {
+            color: #ff0000;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .emergency-header p {
+            color: #666;
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Emergency Alert */
+        .emergency-alert {
+            background: linear-gradient(135deg, #ff0000 0%, #ff4d4d 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.2);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .emergency-alert p {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .emergency-alert .hotline {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .emergency-alert .hotline:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        /* Request Form */
+        .request-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(255, 0, 0, 0.1);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #ff0000;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Urgency Options */
+        .urgency-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .urgency-option {
+            position: relative;
+            padding: 1.25rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 3px solid transparent;
+            text-align: center;
+            font-weight: 500;
+            font-size: 1.1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transform-origin: center;
+            overflow: hidden;
+            background: #ff0000;
+            color: white;
+        }
+
+        .urgency-option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .urgency-option:hover::before {
+            transform: translateX(0);
+        }
+
+        .urgency-option:hover {
+            background: #ff1a1a;
+            border-color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(255, 0, 0, 0.3);
+        }
+
+        .urgency-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .urgency-option .urgency-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            color: white;
+        }
+
+        .urgency-option .urgency-content::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 3px;
+            background: white;
+            transition: width 0.2s ease;
+            border-radius: 2px;
+        }
+
+        .urgency-option .urgency-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+            transition: all 0.2s ease;
+            color: white;
+        }
+
+        .urgency-option .urgency-time {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            transition: all 0.2s ease;
+            color: white;
+        }
+
+        /* Selected State */
+        .urgency-option input[type="radio"]:checked + .urgency-content {
+            font-weight: 700;
+            color: white;
+        }
+
+        .urgency-option input[type="radio"]:checked + .urgency-content::after {
+            width: 80%;
+            background: white;
+        }
+
+        .urgency-option input[type="radio"]:checked ~ .urgency-content {
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            color: white;
+        }
+
+        .urgency-option input[type="radio"]:checked ~ .urgency-content .urgency-title {
+            transform: scale(1.05);
+            color: white;
+        }
+
+        .urgency-option input[type="radio"]:checked ~ .urgency-content .urgency-time {
+            opacity: 1;
+            color: white;
+        }
+
+        /* Hover State */
+        .urgency-option:hover .urgency-content,
+        .urgency-option:hover .urgency-title,
+        .urgency-option:hover .urgency-time {
+            color: white;
+        }
+
+        /* Active/Pressed State */
+        .urgency-option:active {
+            transform: scale(0.98) !important;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1) !important;
+            border-color: transparent !important;
+        }
+
+        /* Selected Hover State */
+        .urgency-option input[type="radio"]:checked + .urgency-content + .urgency-option:hover {
+            border-color: white;
+        }
+
+        /* Submit Button */
+        .submit-button {
+            background: #ff0000;
+            color: white;
+            padding: 1.2rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-button:hover {
+            background: #ff1a1a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+        }
+
+        .submit-button:active {
+            transform: translateY(0);
+        }
+
+        /* Status Tracker */
+        .status-tracker {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(255, 0, 0, 0.1);
+            margin-top: 2rem;
+            display: none;
+        }
+
+        .status-tracker h3 {
+            color: #ff0000;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        .status-timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .status-step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+            opacity: 0.5;
+            transition: all 0.3s ease;
+        }
+
+        .status-step.active {
+            opacity: 1;
+        }
+
+        .step-number {
+            background: #ff0000;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex-grow: 1;
+        }
+
+        .step-content h4 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-content p {
+            color: #666;
+        }
+
+        .request-info {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #eee;
+        }
+
+        .request-info p {
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-info {
+            background: #fff5f5;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .contact-info h4 {
+            color: #ff0000;
+            margin-bottom: 1rem;
+        }
+
+        .contact-info p {
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Mobile Styles */
+        @media (max-width: 768px) {
+            .emergency-container {
+                padding: 1rem;
+                margin-top: 80px;
+            }
+
+            .emergency-header h1 {
+                font-size: 2rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .urgency-options {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">BloodLife</div>
+            <div class="nav-links">
+                <a href="index.html">Trang Chủ</a>
+                <div class="dropdown">
+                    <button class="dropdown-btn">Dịch Vụ</button>
+                    <div class="dropdown-content">
+                        <a href="donate.html">Hiến Máu</a>
+                        <a href="blood-compatibility.html">Tương Thích</a>
+                        <a href="blood-search.html">Tìm Máu</a>
+                        <a href="emergency-request.html">Khẩn Cấp</a>
+                    </div>
+                </div>
+                <a href="index.html#contact">Liên Hệ</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="emergency-container">
+        <div class="emergency-header">
+            <h1>Yêu Cầu Máu Khẩn Cấp</h1>
+            <p>Bạn cần máu gấp? Đội ngũ phản ứng nhanh của chúng tôi luôn sẵn sàng 24/7 để hỗ trợ bạn tìm nguồn máu phù hợp.</p>
+        </div>
+
+        <div class="emergency-alert">
+            <p>⚠️ Biểu mẫu này chỉ dành cho các trường hợp cần máu khẩn cấp. Nếu không phải trường hợp khẩn cấp, vui lòng sử dụng chức năng tìm máu thông thường.</p>
+            <p>Cần hỗ trợ ngay? Gọi đường dây nóng khẩn cấp:</p>
+            <a href="tel:1800-BLOOD" class="hotline">1800-BLOOD (24/7)</a>
+        </div>
+
+        <form class="request-form" id="emergencyForm">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="patientName">Tên bệnh nhân</label>
+                    <input type="text" id="patientName" name="patientName" required placeholder="Nhập họ tên bệnh nhân">
+                </div>
+                <div class="form-group">
+                    <label for="contactName">Người liên hệ</label>
+                    <input type="text" id="contactName" name="contactName" required placeholder="Nhập tên người liên hệ">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="contactPhone">Số điện thoại liên hệ</label>
+                    <input type="tel" id="contactPhone" name="contactPhone" required placeholder="(012) 345-6789">
+                </div>
+                <div class="form-group">
+                    <label for="contactEmail">Email liên hệ</label>
+                    <input type="email" id="contactEmail" name="contactEmail" required placeholder="Nhập địa chỉ email">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="bloodType">Nhóm máu cần thiết</label>
+                    <select id="bloodType" name="bloodType" required>
+                        <option value="">Chọn nhóm máu</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="units">Số lượng đơn vị máu</label>
+                    <input type="number" id="units" name="units" min="1" max="10" required placeholder="Nhập số lượng đơn vị máu">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="hospital">Tên bệnh viện/cơ sở</label>
+                    <input type="text" id="hospital" name="hospital" required placeholder="Nhập tên bệnh viện hoặc cơ sở">
+                </div>
+                <div class="form-group">
+                    <label for="hospitalAddress">Địa chỉ bệnh viện</label>
+                    <input type="text" id="hospitalAddress" name="hospitalAddress" required placeholder="Nhập địa chỉ bệnh viện">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Mức độ khẩn cấp</label>
+                <div class="urgency-options">
+                    <label class="urgency-option">
+                        <input type="radio" name="urgency" value="emergency" required>
+                        <div class="urgency-content">
+                            <div class="urgency-title">Khẩn cấp</div>
+                            <div class="urgency-time">Cần trong vòng 1 giờ</div>
+                        </div>
+                    </label>
+                    <label class="urgency-option">
+                        <input type="radio" name="urgency" value="urgent" required>
+                        <div class="urgency-content">
+                            <div class="urgency-title">Gấp</div>
+                            <div class="urgency-time">Cần trong vòng 4 giờ</div>
+                        </div>
+                    </label>
+                    <label class="urgency-option">
+                        <input type="radio" name="urgency" value="critical" required>
+                        <div class="urgency-content">
+                            <div class="urgency-title">Quan trọng</div>
+                            <div class="urgency-time">Cần trong vòng 24 giờ</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="reason">Lý do cần máu</label>
+                <textarea id="reason" name="reason" required placeholder="Vui lòng nêu rõ lý do cần máu"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="additionalInfo">Thông tin bổ sung</label>
+                <textarea id="additionalInfo" name="additionalInfo" placeholder="Các thông tin khác nếu có"></textarea>
+            </div>
+
+            <button type="submit" class="submit-button">Gửi Yêu Cầu Khẩn Cấp</button>
+        </form>
+
+        <div class="status-tracker" id="statusTracker">
+            <h3>Trạng Thái Yêu Cầu</h3>
+            <div class="status-timeline">
+                <div class="status-step active" id="step1">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>Đã nhận yêu cầu</h4>
+                        <p>Yêu cầu của bạn đã được tiếp nhận và đang được xử lý ngay lập tức</p>
+                    </div>
+                </div>
+                <div class="status-step" id="step2">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>Đang thông báo cho người hiến</h4>
+                        <p>Hệ thống đang liên hệ với các người hiến máu tiềm năng gần bạn</p>
+                    </div>
+                </div>
+                <div class="status-step" id="step3">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>Đang tìm người phù hợp</h4>
+                        <p>Đang tìm người hiến máu tương thích theo yêu cầu của bạn</p>
+                    </div>
+                </div>
+                <div class="status-step" id="step4">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h4>Phối hợp</h4>
+                        <p>Đang sắp xếp lấy máu và chuyển đến địa điểm của bạn</p>
+                    </div>
+                </div>
+                <div class="status-step" id="step5">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <h4>Đang lấy máu</h4>
+                        <p>Máu đang được lấy và chuẩn bị chuyển giao ngay lập tức</p>
+                    </div>
+                </div>
+            </div>
+            <div class="request-info">
+                <p>Mã yêu cầu: <span id="requestId"></span></p>
+                <p>Cập nhật trạng thái sẽ được gửi tới số điện thoại và email của bạn</p>
+            </div>
+            <div class="contact-info">
+                <h4>Cần hỗ trợ ngay?</h4>
+                <p>Nếu bạn cần nói chuyện với nhân viên ngay lập tức, vui lòng gọi đường dây nóng:</p>
+                <p><a href="tel:1800-BLOOD" class="hotline">1800-BLOOD (24/7)</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="mobile-nav-links">
+        <a href="index.html">Trang Chủ</a>
+        <div class="dropdown">
+            <button class="dropdown-btn">Dịch Vụ</button>
+            <div class="dropdown-content">
+                <a href="donate.html">Hiến Máu</a>
+                <a href="blood-compatibility.html">Tương Thích</a>
+                <a href="blood-search.html">Tìm Máu</a>
+                <a href="emergency-request.html">Khẩn Cấp</a>
+            </div>
+        </div>
+        <a href="index.html#contact">Liên Hệ</a>
+    </div>
+
+    <footer>
+        <!-- Thêm scripts xác thực -->
+        <script src="js/auth.js"></script>
+        <script src="js/navbar.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const currentUser = auth.getCurrentUser();
+                if (!currentUser) {
+                    localStorage.setItem('redirectAfterLogin', window.location.href);
+                    window.location.href = 'login.html';
+                }
+                if (typeof updateUserProfile === 'function') {
+                    updateUserProfile();
+                }
+                const authButtons = document.getElementById('authButtons');
+                const mobileAuthButtons = document.getElementById('mobileAuthButtons');
+                if (currentUser) {
+                    if (authButtons) authButtons.style.display = 'none';
+                    if (mobileAuthButtons) mobileAuthButtons.style.display = 'none';
+                }
+            });
+        </script>
+    </footer>
+
+    <script>
+        document.getElementById('emergencyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const requestId = 'REQ-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+            document.getElementById('requestId').textContent = requestId;
+            document.getElementById('statusTracker').style.display = 'block';
+            this.style.display = 'none';
+            let currentStep = 1;
+            const updateInterval = setInterval(() => {
+                if (currentStep <= 5) {
+                    document.getElementById(`step${currentStep}`).classList.add('active');
+                    currentStep++;
+                } else {
+                    clearInterval(updateInterval);
+                }
+            }, 30000);
+        });
+
+        document.getElementById('contactPhone').addEventListener('input', function(e) {
+            let x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+            e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+        });
+
+        document.querySelectorAll('.urgency-option').forEach(option => {
+            option.addEventListener('click', function() {
+                this.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+                document.querySelectorAll('.urgency-option').forEach(opt => {
+                    if (opt !== this) {
+                        opt.style.transform = '';
+                        opt.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
+                        opt.style.borderColor = 'transparent';
+                    }
+                });
+            });
+            option.addEventListener('mouseenter', function() {
+                if (this.querySelector('input[type="radio"]:checked')) {
+                    this.style.borderColor = 'white';
+                }
+            });
+            option.addEventListener('mouseleave', function() {
+                if (this.querySelector('input[type="radio"]:checked')) {
+                    this.style.borderColor = 'transparent';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giới Thiệu - BloodLife</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        header {
+            background-color: #ff4d4d;
+            color: white;
+            padding: 1rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .about-container {
+            max-width: 1200px;
+            margin: 100px auto 40px;
+            padding: 2rem;
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding: 3rem 1rem;
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe5e5 100%);
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(255, 77, 77, 0.1);
+        }
+
+        .hero-section h1 {
+            color: #ff4d4d;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-section p {
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        .mission-section {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 3rem;
+            margin-bottom: 4rem;
+            align-items: center;
+        }
+
+        .mission-content {
+            padding-right: 2rem;
+        }
+
+        .mission-content h2 {
+            color: #ff4d4d;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+        }
+
+        .mission-content p {
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .mission-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .impact-section {
+            background: #f8f9fa;
+            padding: 4rem 2rem;
+            border-radius: 20px;
+            margin-bottom: 4rem;
+        }
+
+        .impact-section h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 3rem;
+            font-size: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            color: #ff4d4d;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .team-section {
+            margin-bottom: 4rem;
+        }
+
+        .team-section h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 3rem;
+            font-size: 2rem;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .team-member {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .team-member:hover {
+            transform: translateY(-5px);
+        }
+
+        .member-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .member-info {
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .member-info h3 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .member-info p {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .member-role {
+            color: #ff4d4d;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .values-section {
+            background: #fff5f5;
+            padding: 4rem 2rem;
+            border-radius: 20px;
+            margin-bottom: 4rem;
+        }
+
+        .values-section h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 3rem;
+            font-size: 2rem;
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .value-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .value-card h3 {
+            color: #ff4d4d;
+            margin-bottom: 1rem;
+        }
+
+        .value-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .cta-section {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #ff4d4d 0%, #ff3333 100%);
+            border-radius: 20px;
+            color: white;
+        }
+
+        .cta-section h2 {
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+        }
+
+        .cta-section p {
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        .cta-button {
+            background: white;
+            color: #ff4d4d;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 1024px) {
+            .mission-section {
+                grid-template-columns: 1fr;
+            }
+
+            .mission-content {
+                padding-right: 0;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .team-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .values-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .about-container {
+                padding: 1rem;
+                margin-top: 80px;
+            }
+
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+
+            .stats-grid,
+            .team-grid,
+            .values-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .mission-image {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">BloodLife</div>
+            <div class="nav-links">
+                <a href="index.html">Trang Chủ</a>
+                <a href="about.html">Giới Thiệu</a>
+                <a href="donate.html">Hiến Máu</a>
+                <a href="blood-compatibility.html">Tương Thích</a>
+                <a href="blood-search.html">Tìm Máu</a>
+                <a href="emergency-request.html">Khẩn Cấp</a>
+                <a href="index.html#contact">Liên Hệ</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="about-container">
+        <section class="hero-section">
+            <h1>Về BloodLife</h1>
+            <p>Chúng tôi là một đội ngũ tận tâm với sứ mệnh đổi mới dịch vụ hiến máu và truyền máu, giúp kết nối người hiến với người cần một cách dễ dàng và hiệu quả hơn. Sứ mệnh của chúng tôi là cứu sống nhiều người hơn thông qua công nghệ hiện đại và sự gắn kết cộng đồng.</p>
+        </section>
+
+        <section class="mission-section">
+            <div class="mission-content">
+                <h2>Sứ Mệnh Của Chúng Tôi</h2>
+                <p>Tại BloodLife, chúng tôi tin rằng việc tiếp cận nguồn máu an toàn và kịp thời là quyền lợi của mọi người. Nền tảng của chúng tôi kết nối người hiến máu và người nhận, đảm bảo mọi người cần đều có thể nhận được máu cứu sống.</p>
+                <p>Thông qua công nghệ hiện đại và mạng lưới đối tác y tế rộng khắp, chúng tôi đang làm cho việc hiến máu trở nên dễ tiếp cận, hiệu quả và ý nghĩa hơn bao giờ hết.</p>
+            </div>
+            <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
+                 alt="Nhân viên y tế làm việc tại ngân hàng máu hiện đại" 
+                 class="mission-image">
+        </section>
+
+        <section class="impact-section">
+            <h2>Tác Động Của Chúng Tôi</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">50.000+</div>
+                    <div class="stat-label">Người Được Cứu Sống</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">100.000+</div>
+                    <div class="stat-label">Người Hiến Đã Đăng Ký</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">200+</div>
+                    <div class="stat-label">Bệnh Viện Đối Tác</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Hỗ Trợ Khẩn Cấp</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="values-section">
+            <h2>Giá Trị Cốt Lõi</h2>
+            <div class="values-grid">
+                <div class="value-card">
+                    <h3>Đổi Mới</h3>
+                    <p>Không ngừng cải tiến nền tảng và dịch vụ để phục vụ cộng đồng tốt hơn</p>
+                </div>
+                <div class="value-card">
+                    <h3>Tiếp Cận</h3>
+                    <p>Đảm bảo mọi người đều có thể tiếp cận dịch vụ hiến và truyền máu</p>
+                </div>
+                <div class="value-card">
+                    <h3>An Toàn</h3>
+                    <p>Tuân thủ tiêu chuẩn an toàn và chất lượng máu cao nhất</p>
+                </div>
+                <div class="value-card">
+                    <h3>Cộng Đồng</h3>
+                    <p>Xây dựng mối quan hệ bền vững với các nhà cung cấp dịch vụ y tế và người hiến máu</p>
+                </div>
+                <div class="value-card">
+                    <h3>Minh Bạch</h3>
+                    <p>Hoạt động minh bạch và giao tiếp rõ ràng</p>
+                </div>
+                <div class="value-card">
+                    <h3>Tác Động</h3>
+                    <p>Tập trung vào kết quả thực tế để cứu sống nhiều người hơn</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <h2>Tham Gia Sứ Mệnh Của Chúng Tôi</h2>
+            <p>Hãy trở thành một phần của hành trình cứu người. Dù bạn là người hiến máu, nhân viên y tế hay người ủng hộ, sự đóng góp của bạn đều có ý nghĩa.</p>
+            <a href="donate.html" class="cta-button">Bắt Đầu Hiến Máu Ngay</a>
+        </section>
+    </div>
+</body>
+</html>

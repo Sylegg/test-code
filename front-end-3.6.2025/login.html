@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Nhập - Hệ Thống Hỗ Trợ Hiến Máu</title>
+    <!-- Thêm Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: #ff4d4d;
+            color: white;
+            padding: 1rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* Mobile Navigation */
+        .mobile-menu-button {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            padding: 2rem;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .mobile-nav.active {
+            transform: translateX(0);
+        }
+
+        .mobile-nav .close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .mobile-nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .mobile-nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Dropdown styles */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+
+        .dropdown-btn::after {
+            content: '▼';
+            font-size: 0.7rem;
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown:hover .dropdown-btn::after {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-btn:hover {
+            color: #ff4d4d;
+            transform: translateY(-1px);
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            min-width: 220px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            border-radius: 12px;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 77, 77, 0.1);
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .dropdown-content a {
+            color: #333;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dropdown-content a::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: #ff4d4d;
+            transform: scaleY(0);
+            transition: transform 0.2s ease;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #fff5f5;
+            color: #ff4d4d;
+            transform: translateX(5px);
+            padding-left: 20px;
+        }
+
+        .dropdown-content a:hover::before {
+            transform: scaleY(1);
+        }
+
+        .dropdown-content a::after {
+            content: '→';
+            position: absolute;
+            right: 16px;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-content a:hover::after {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Update mobile menu styles */
+        @media (max-width: 768px) {
+            .nav-links, .auth-buttons {
+                display: none;
+            }
+
+            .mobile-menu-button {
+                display: block;
+            }
+
+            .mobile-nav {
+                display: block;
+            }
+
+            .dropdown {
+                width: 100%;
+            }
+
+            .dropdown-btn {
+                width: 100%;
+                text-align: left;
+                padding: 1rem;
+                color: #333;
+                justify-content: space-between;
+            }
+
+            .dropdown-content {
+                position: static;
+                display: none;
+                width: 100%;
+                box-shadow: none;
+                background: #f8f8f8;
+                opacity: 1;
+                transform: none;
+                border: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .dropdown.active .dropdown-content {
+                display: block;
+            }
+
+            .dropdown-content a {
+                padding: 1rem 2rem;
+                border-radius: 0;
+            }
+
+            .dropdown-content a:hover {
+                transform: none;
+                padding-left: 2rem;
+            }
+
+            .dropdown-content a::after {
+                display: none;
+            }
+        }
+
+        /* Login Form Styles */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1615461066841-6116e61058f4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            background-position: center;
+            padding: 6rem 2rem 2rem 2rem;
+        }
+
+        .login-form {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-form h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #ff4d4d;
+        }
+
+        .login-button {
+            width: 100%;
+            background-color: #ff4d4d;
+            color: white;
+            padding: 1rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .login-button:hover {
+            background-color: #ff3333;
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .form-footer a {
+            color: #ff4d4d;
+            text-decoration: none;
+        }
+
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: #ff4d4d;
+            text-align: center;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        /* User Profile Styles */
+        .user-profile {
+            position: relative;
+            display: none; /* Hidden by default, shown when logged in */
+        }
+
+        .user-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #ff4d4d;
+            font-weight: bold;
+            font-size: 1.2rem;
+            border: 2px solid #fff;
+            transition: all 0.3s ease;
+        }
+
+        .user-icon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            min-width: 200px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            margin-top: 0.5rem;
+            display: none;
+            z-index: 1000;
+        }
+
+        .user-dropdown.active {
+            display: block;
+        }
+
+        .user-info {
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 1rem;
+        }
+
+        .user-info h3 {
+            color: #333;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .user-info p {
+            color: #666;
+            font-size: 0.9rem;
+            margin: 0.2rem 0;
+        }
+
+        .user-dropdown a {
+            color: #333;
+            text-decoration: none;
+            display: block;
+            padding: 0.5rem 0;
+            transition: color 0.3s ease;
+        }
+
+        .user-dropdown a:hover {
+            color: #ff4d4d;
+        }
+
+        .logout-btn {
+            color: #ff4d4d !important;
+            border-top: 1px solid #eee;
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+        }
+
+        /* Mobile Navigation Menu */
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            padding: 2rem;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .mobile-nav.active {
+            transform: translateX(0);
+        }
+
+        .mobile-nav .close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .mobile-nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .mobile-nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .mobile-nav .user-profile {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .mobile-nav .user-icon {
+            width: 50px;
+            height: 50px;
+            font-size: 1.5rem;
+        }
+
+        .mobile-nav .user-dropdown {
+            position: static;
+            background: transparent;
+            box-shadow: none;
+            padding: 1rem 0;
+            margin-top: 1rem;
+        }
+
+        .mobile-nav .user-info {
+            border-bottom-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .mobile-nav .user-info h3,
+        .mobile-nav .user-info p {
+            color: white;
+        }
+
+        .mobile-nav .user-dropdown a {
+            color: white;
+            padding: 0.8rem 0;
+            font-size: 1.1rem;
+        }
+
+        .mobile-nav .user-dropdown a:hover {
+            color: #ff4d4d;
+        }
+
+        .mobile-nav .logout-btn {
+            border-top-color: rgba(255, 255, 255, 0.1);
+            color: #ff4d4d !important;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">BloodLife</div>
+            <button class="mobile-menu-button" id="mobileMenuButton">☰</button>
+            <div class="nav-links">
+                <a href="index.html">Trang Chủ</a>
+                <div class="dropdown">
+                    <button class="dropdown-btn">Dịch Vụ</button>
+                    <div class="dropdown-content">
+                        <a href="donate.html">Hiến Máu</a>
+                        <a href="blood-compatibility.html">Tương Thích</a>
+                        <a href="blood-search.html">Tìm Máu</a>
+                        <a href="emergency-request.html">Khẩn Cấp</a>
+                    </div>
+                </div>
+                <a href="index.html#contact">Liên Hệ</a>
+                <!-- Thông tin người dùng -->
+                <div class="user-profile" id="userProfile">
+                    <div class="user-icon" id="userIcon">
+                        <span id="userInitials">U</span>
+                    </div>
+                    <div class="user-dropdown" id="userDropdown">
+                        <div class="user-info">
+                            <h3 id="userFullName">Tên Người Dùng</h3>
+                            <p id="userEmail">nguoidung@email.com</p>
+                            <p id="userBloodType">Nhóm máu: A+</p>
+                        </div>
+                        <a href="profile.html">Thông tin cá nhân</a>
+                        <a href="donation-history.html">Lịch sử hiến máu</a>
+                        <a href="#" class="logout-btn" id="logoutBtn">Đăng xuất</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Menu di động -->
+    <div class="mobile-nav" id="mobileNav">
+        <button class="close-button" id="closeMobileMenu">×</button>
+        <div class="mobile-nav-links">
+            <a href="index.html">Trang Chủ</a>
+            <div class="dropdown">
+                <button class="dropdown-btn">Dịch Vụ</button>
+                <div class="dropdown-content">
+                    <a href="donate.html">Hiến Máu</a>
+                    <a href="blood-compatibility.html">Tương Thích</a>
+                    <a href="blood-search.html">Tìm Máu</a>
+                    <a href="emergency-request.html">Khẩn Cấp</a>
+                </div>
+            </div>
+            <a href="index.html#contact">Liên Hệ</a>
+            <!-- Thông tin người dùng trên mobile -->
+            <div class="user-profile" id="mobileUserProfile">
+                <div class="user-icon" id="mobileUserIcon">
+                    <span id="mobileUserInitials">U</span>
+                </div>
+                <div class="user-dropdown" id="mobileUserDropdown">
+                    <div class="user-info">
+                        <h3 id="mobileUserFullName">Tên Người Dùng</h3>
+                        <p id="mobileUserEmail">nguoidung@email.com</p>
+                        <p id="mobileUserBloodType">Nhóm máu: A+</p>
+                    </div>
+                    <a href="profile.html">Thông tin cá nhân</a>
+                    <a href="donation-history.html">Lịch sử hiến máu</a>
+                    <a href="#" class="logout-btn" id="mobileLogoutBtn">Đăng xuất</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="login-container">
+        <form class="login-form" id="loginForm">
+            <h2>Đăng Nhập</h2>
+            <div class="error-message" id="errorMessage"></div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required placeholder="Nhập email của bạn">
+            </div>
+            <div class="form-group">
+                <label for="password">Mật khẩu</label>
+                <input type="password" id="password" name="password" required placeholder="Nhập mật khẩu của bạn">
+            </div>
+            <button type="submit" class="login-button">Đăng Nhập</button>
+            <div class="form-footer">
+                <p>Chưa có tài khoản? <a href="register.html">Đăng ký tại đây</a></p>
+            </div>
+        </form>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/navbar.js"></script>
+    <script>
+        // Hàm xử lý đăng nhập
+        async function handleLogin(email, password) {
+            try {
+                const result = await auth.login(email, password);
+                if (result.success) {
+                    // Cập nhật navbar với thông tin người dùng
+                    if (typeof updateUserProfile === 'function') {
+                        updateUserProfile();
+                    }
+                    // Kiểm tra có URL chuyển hướng không
+                    const redirectUrl = localStorage.getItem('redirectAfterLogin');
+                    if (redirectUrl) {
+                        localStorage.removeItem('redirectAfterLogin');
+                        window.location.href = redirectUrl;
+                    } else {
+                        window.location.href = 'index.html';
+                    }
+                }
+            } catch (error) {
+                throw error;
+            }
+        }
+
+        // Xử lý submit form đăng nhập
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.style.display = 'none';
+            
+            try {
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+
+                // Kiểm tra cơ bản
+                if (!email || !password) {
+                    throw new Error('Vui lòng nhập đầy đủ email và mật khẩu');
+                }
+
+                await handleLogin(email, password);
+            } catch (error) {
+                errorMessage.textContent = error.message || 'Đăng nhập thất bại. Vui lòng thử lại.';
+                errorMessage.style.display = 'block';
+            }
+        });
+
+        // Kiểm tra nếu người dùng đã đăng nhập
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof auth !== 'undefined' && auth.getCurrentUser()) {
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+</body>
+</html>

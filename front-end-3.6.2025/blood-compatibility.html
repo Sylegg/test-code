@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tương Thích Nhóm Máu - BloodLife</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: #ff4d4d;
+            color: white;
+            padding: 1rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* Compatibility Page Styles */
+        .compatibility-container {
+            max-width: 1200px;
+            margin: 100px auto 40px;
+            padding: 2rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-header h1 {
+            color: #333;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .page-header p {
+            color: #666;
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Compatibility Table */
+        .compatibility-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .compatibility-table th,
+        .compatibility-table td {
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid #eee;
+        }
+
+        .compatibility-table th {
+            background-color: #ff4d4d;
+            color: white;
+            font-weight: 600;
+        }
+
+        .compatibility-table tr:nth-child(even) {
+            background-color: #fff5f5;
+        }
+
+        .compatible {
+            color: #38a169;
+            font-weight: 600;
+        }
+
+        .incompatible {
+            color: #e53e3e;
+            font-weight: 600;
+        }
+
+        /* Blood Type Selector */
+        .blood-type-selector {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .selector-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .selector-header h2 {
+            color: #333;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .blood-type-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .blood-type-option {
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .blood-type-option:hover {
+            border-color: #ff4d4d;
+            transform: translateY(-2px);
+        }
+
+        .blood-type-option.selected {
+            background-color: #ff4d4d;
+            color: white;
+            border-color: #ff4d4d;
+        }
+
+        .blood-type-option.negative {
+            border-color: #ff6b6b;
+        }
+
+        /* Component Selector Styles */
+        .component-selector {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .component-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .component-header h2 {
+            color: #333;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .component-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .component-option {
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 1.1rem;
+            background: #fff;
+        }
+
+        .component-option:hover {
+            border-color: #ff4d4d;
+            transform: translateY(-2px);
+        }
+
+        .component-option.selected {
+            background-color: #ff4d4d;
+            color: white;
+            border-color: #ff4d4d;
+        }
+
+        .component-description {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 0.5rem;
+            text-align: left;
+        }
+
+        /* Compatibility Results */
+        .compatibility-results {
+            display: none;
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 2rem;
+            max-width: 800px;
+            margin: 2rem auto;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #eee;
+        }
+
+        .results-header h2 {
+            color: #333;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .results-header .selected-info {
+            color: #666;
+            font-size: 1.1rem;
+            margin-top: 0.5rem;
+        }
+
+        .results-header .selected-info span {
+            color: #ff4d4d;
+            font-weight: 600;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .result-card {
+            background: #fff5f5;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 2px solid #ff4d4d;
+            margin-bottom: 1rem;
+        }
+
+        .result-card h3 {
+            color: #ff4d4d;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .result-card .component-type {
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: normal;
+        }
+
+        .result-card ul {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .result-card li {
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .result-card li::before {
+            content: "•";
+            color: #ff4d4d;
+            position: absolute;
+            left: 0;
+        }
+
+        .result-card .blood-type {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .result-card .compatibility-note {
+            font-size: 0.9rem;
+            color: #666;
+            font-style: italic;
+        }
+
+        /* Info Box */
+        .info-box {
+            background: linear-gradient(135deg, #f0fff4 0%, #e6ffed 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 3rem auto;
+            border: 2px solid #38a169;
+            box-shadow: 0 4px 20px rgba(56, 161, 105, 0.1);
+            max-width: 800px;
+        }
+
+        .info-box h3 {
+            color: #2f855a;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        .info-box ul {
+            list-style: none;
+        }
+
+        .info-box li {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .info-box li::before {
+            content: "✓";
+            color: #38a169;
+            position: absolute;
+            left: 0;
+        }
+
+        /* Mobile Navigation */
+        .mobile-menu-button {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            padding: 2rem;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .mobile-nav.active {
+            transform: translateX(0);
+        }
+
+        .mobile-nav .close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .mobile-nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .mobile-nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Dropdown styles */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+
+        .dropdown-btn::after {
+            content: '▼';
+            font-size: 0.7rem;
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown:hover .dropdown-btn::after {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-btn:hover {
+            color: #ff4d4d;
+            transform: translateY(-1px);
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            min-width: 220px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            border-radius: 12px;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 77, 77, 0.1);
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .dropdown-content a {
+            color: #333;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dropdown-content a::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: #ff4d4d;
+            transform: scaleY(0);
+            transition: transform 0.2s ease;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #fff5f5;
+            color: #ff4d4d;
+            transform: translateX(5px);
+            padding-left: 20px;
+        }
+
+        .dropdown-content a:hover::before {
+            transform: scaleY(1);
+        }
+
+        .dropdown-content a::after {
+            content: '→';
+            position: absolute;
+            right: 16px;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-content a:hover::after {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links, .auth-buttons {
+                display: none;
+            }
+
+            .mobile-menu-button {
+                display: block;
+            }
+
+            .mobile-nav {
+                display: block;
+            }
+
+            .compatibility-container {
+                padding: 1rem;
+                margin-top: 80px;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .compatibility-table {
+                font-size: 0.9rem;
+            }
+
+            .compatibility-table th,
+            .compatibility-table td {
+                padding: 0.5rem;
+            }
+
+            .blood-type-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .component-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .compatibility-form {
+                padding: 1.5rem;
+            }
+
+            .form-group select {
+                font-size: 0.9rem;
+                padding: 0.7rem;
+            }
+
+            .submit-button {
+                padding: 0.8rem 1.5rem;
+                font-size: 1rem;
+            }
+
+            .dropdown {
+                width: 100%;
+            }
+
+            .dropdown-btn {
+                width: 100%;
+                text-align: left;
+                padding: 1rem;
+                color: #333;
+                justify-content: space-between;
+            }
+
+            .dropdown-content {
+                position: static;
+                display: none;
+                width: 100%;
+                box-shadow: none;
+                background: #f8f8f8;
+                opacity: 1;
+                transform: none;
+                border: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .dropdown.active .dropdown-content {
+                display: block;
+            }
+
+            .dropdown-content a {
+                padding: 1rem 2rem;
+                border-radius: 0;
+            }
+
+            .dropdown-content a:hover {
+                transform: none;
+                padding-left: 2rem;
+            }
+
+            .dropdown-content a::after {
+                display: none;
+            }
+        }
+
+        /* Form Styles */
+        .compatibility-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            color: #333;
+            background-color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .form-group select:hover {
+            border-color: #ff4d4d;
+        }
+
+        .form-group select:focus {
+            outline: none;
+            border-color: #ff4d4d;
+            box-shadow: 0 0 0 3px rgba(255, 77, 77, 0.1);
+        }
+
+        .form-group .select-description {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        .submit-button {
+            background-color: #ff4d4d;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .submit-button:hover {
+            background-color: #ff3333;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 77, 77, 0.2);
+        }
+
+        .submit-button:active {
+            transform: translateY(0);
+        }
+
+        .submit-button:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 77, 77, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">BloodLife</div>
+            <button class="mobile-menu-button" id="mobileMenuButton">☰</button>
+            <div class="nav-links">
+                <a href="index.html">Trang Chủ</a>
+                <div class="dropdown">
+                    <button class="dropdown-btn">Dịch Vụ</button>
+                    <div class="dropdown-content">
+                        <a href="donate.html">Hiến Máu</a>
+                        <a href="blood-compatibility.html">Tương Thích</a>
+                        <a href="blood-search.html">Tìm Máu</a>
+                        <a href="emergency-request.html">Khẩn Cấp</a>
+                    </div>
+                </div>
+                <a href="index.html#contact">Liên Hệ</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Menu di động -->
+    <div class="mobile-nav" id="mobileNav">
+        <button class="close-button" id="closeMobileMenu">×</button>
+        <div class="mobile-nav-links">
+            <a href="index.html">Trang Chủ</a>
+            <div class="dropdown">
+                <button class="dropdown-btn">Dịch Vụ</button>
+                <div class="dropdown-content">
+                    <a href="donate.html">Hiến Máu</a>
+                    <a href="blood-compatibility.html">Tương Thích</a>
+                    <a href="blood-search.html">Tìm Máu</a>
+                    <a href="emergency-request.html">Khẩn Cấp</a>
+                </div>
+            </div>
+            <a href="index.html#contact">Liên Hệ</a>
+        </div>
+    </div>
+
+    <div class="compatibility-container">
+        <div class="page-header">
+            <h1>Bảng Tương Thích Nhóm Máu</h1>
+            <p>Hiểu về sự tương thích nhóm máu là rất quan trọng để truyền máu an toàn. Điền thông tin bên dưới để kiểm tra tương thích cho các thành phần máu khác nhau.</p>
+        </div>
+
+        <form class="compatibility-form" id="compatibilityForm">
+            <div class="form-group">
+                <label for="bloodComponent">Chọn Thành Phần Máu</label>
+                <select id="bloodComponent" name="bloodComponent" required>
+                    <option value="">Chọn thành phần máu...</option>
+                    <option value="whole-blood">Máu toàn phần</option>
+                    <option value="red-cells">Hồng cầu</option>
+                    <option value="plasma">Huyết tương</option>
+                    <option value="platelets">Tiểu cầu</option>
+                </select>
+                <div class="select-description" id="componentDescription"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="bloodType">Chọn Nhóm Máu</label>
+                <select id="bloodType" name="bloodType" required>
+                    <option value="">Chọn nhóm máu của bạn...</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                </select>
+            </div>
+
+            <button type="submit" class="submit-button">Kiểm Tra Tương Thích</button>
+        </form>
+
+        <div class="compatibility-results" id="compatibilityResults">
+            <div class="results-header">
+                <h2>Kết Quả Tương Thích</h2>
+                <div class="selected-info">
+                    Hiển thị tương thích cho <span id="selectedComponent"></span> với nhóm máu <span id="selectedBloodType"></span>
+                </div>
+            </div>
+            <div class="results-grid">
+                <div class="result-card">
+                    <h3>Có Thể Cho</h3>
+                    <ul id="canDonateTo"></ul>
+                </div>
+                <div class="result-card">
+                    <h3>Có Thể Nhận Từ</h3>
+                    <ul id="canReceiveFrom"></ul>
+                </div>
+            </div>
+        </div>
+
+        <table class="compatibility-table">
+            <thead>
+                <tr>
+                    <th>Nhóm Máu</th>
+                    <th>Có Thể Cho</th>
+                    <th>Có Thể Nhận Từ</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>A+</td>
+                    <td class="compatible">A+, AB+</td>
+                    <td class="compatible">A+, A-, O+, O-</td>
+                </tr>
+                <tr>
+                    <td>A-</td>
+                    <td class="compatible">A+, A-, AB+, AB-</td>
+                    <td class="compatible">A-, O-</td>
+                </tr>
+                <tr>
+                    <td>B+</td>
+                    <td class="compatible">B+, AB+</td>
+                    <td class="compatible">B+, B-, O+, O-</td>
+                </tr>
+                <tr>
+                    <td>B-</td>
+                    <td class="compatible">B+, B-, AB+, AB-</td>
+                    <td class="compatible">B-, O-</td>
+                </tr>
+                <tr>
+                    <td>AB+</td>
+                    <td class="compatible">Chỉ AB+</td>
+                    <td class="compatible">Tất cả các nhóm máu</td>
+                </tr>
+                <tr>
+                    <td>AB-</td>
+                    <td class="compatible">AB+, AB-</td>
+                    <td class="compatible">A-, B-, AB-, O-</td>
+                </tr>
+                <tr>
+                    <td>O+</td>
+                    <td class="compatible">A+, B+, AB+, O+</td>
+                    <td class="compatible">O+, O-</td>
+                </tr>
+                <tr>
+                    <td>O-</td>
+                    <td class="compatible">Tất cả các nhóm máu</td>
+                    <td class="compatible">Chỉ O-</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="info-box">
+            <h3>Lưu Ý Về Các Thành Phần Máu</h3>
+            <ul>
+                <li>Máu toàn phần: Bao gồm tất cả thành phần máu, tuân theo quy tắc tương thích ABO và Rh thông thường</li>
+                <li>Hồng cầu: Tuân thủ nghiêm ngặt quy tắc tương thích ABO và Rh</li>
+                <li>Huyết tương: Quy tắc tương thích ngược với hồng cầu (AB nhận được từ tất cả, O chỉ nhận từ O)</li>
+                <li>Tiểu cầu: Ưu tiên tương thích ABO nhưng có thể linh hoạt trong trường hợp khẩn cấp</li>
+                <li>Bệnh nhân Rh âm nên nhận thành phần máu Rh âm</li>
+                <li>Luôn tham khảo ý kiến chuyên gia y tế khi truyền máu</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Dữ liệu tương thích cập nhật với quy tắc từng thành phần máu
+        const compatibilityData = {
+            'whole-blood': {
+                'A+': {
+                    canDonateTo: ['A+', 'AB+'],
+                    canReceiveFrom: ['A+', 'A-', 'O+', 'O-']
+                },
+                'A-': {
+                    canDonateTo: ['A+', 'A-', 'AB+', 'AB-'],
+                    canReceiveFrom: ['A-', 'O-']
+                },
+                'B+': {
+                    canDonateTo: ['B+', 'AB+'],
+                    canReceiveFrom: ['B+', 'B-', 'O+', 'O-']
+                },
+                'B-': {
+                    canDonateTo: ['B+', 'B-', 'AB+', 'AB-'],
+                    canReceiveFrom: ['B-', 'O-']
+                },
+                'AB+': {
+                    canDonateTo: ['AB+'],
+                    canReceiveFrom: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']
+                },
+                'AB-': {
+                    canDonateTo: ['AB+', 'AB-'],
+                    canReceiveFrom: ['A-', 'B-', 'AB-', 'O-']
+                },
+                'O+': {
+                    canDonateTo: ['A+', 'B+', 'AB+', 'O+'],
+                    canReceiveFrom: ['O+', 'O-']
+                },
+                'O-': {
+                    canDonateTo: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
+                    canReceiveFrom: ['O-']
+                }
+            },
+            'red-cells': {
+                'A+': {
+                    canDonateTo: ['A+', 'AB+'],
+                    canReceiveFrom: ['A+', 'A-', 'O+', 'O-']
+                },
+                'A-': {
+                    canDonateTo: ['A+', 'A-', 'AB+', 'AB-'],
+                    canReceiveFrom: ['A-', 'O-']
+                },
+                'B+': {
+                    canDonateTo: ['B+', 'AB+'],
+                    canReceiveFrom: ['B+', 'B-', 'O+', 'O-']
+                },
+                'B-': {
+                    canDonateTo: ['B+', 'B-', 'AB+', 'AB-'],
+                    canReceiveFrom: ['B-', 'O-']
+                },
+                'AB+': {
+                    canDonateTo: ['AB+'],
+                    canReceiveFrom: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']
+                },
+                'AB-': {
+                    canDonateTo: ['AB+', 'AB-'],
+                    canReceiveFrom: ['A-', 'B-', 'AB-', 'O-']
+                },
+                'O+': {
+                    canDonateTo: ['A+', 'B+', 'AB+', 'O+'],
+                    canReceiveFrom: ['O+', 'O-']
+                },
+                'O-': {
+                    canDonateTo: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
+                    canReceiveFrom: ['O-']
+                }
+            },
+            'plasma': {
+                'A+': {
+                    canDonateTo: ['A+', 'A-', 'O+', 'O-'],
+                    canReceiveFrom: ['A+', 'AB+']
+                },
+                'A-': {
+                    canDonateTo: ['A-', 'O-'],
+                    canReceiveFrom: ['A+', 'A-', 'AB+', 'AB-']
+                },
+                'B+': {
+                    canDonateTo: ['B+', 'B-', 'O+', 'O-'],
+                    canReceiveFrom: ['B+', 'AB+']
+                },
+                'B-': {
+                    canDonateTo: ['B-', 'O-'],
+                    canReceiveFrom: ['B+', 'B-', 'AB+', 'AB-']
+                },
+                'AB+': {
+                    canDonateTo: ['Tất cả các nhóm máu'],
+                    canReceiveFrom: ['Chỉ AB+']
+                },
+                'AB-': {
+                    canDonateTo: ['A-', 'B-', 'AB-', 'O-'],
+                    canReceiveFrom: ['AB+', 'AB-']
+                },
+                'O+': {
+                    canDonateTo: ['O+', 'O-'],
+                    canReceiveFrom: ['A+', 'B+', 'AB+', 'O+']
+                },
+                'O-': {
+                    canDonateTo: ['Chỉ O-'],
+                    canReceiveFrom: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']
+                }
+            },
+            'platelets': {
+                'A+': {
+                    canDonateTo: ['A+', 'AB+'],
+                    canReceiveFrom: ['A+', 'A-', 'O+', 'O-'],
+                    note: 'Ưu tiên tương thích ABO nhưng có thể linh hoạt trong trường hợp khẩn cấp'
+                },
+                'A-': {
+                    canDonateTo: ['A+', 'A-', 'AB+', 'AB-'],
+                    canReceiveFrom: ['A-', 'O-'],
+                    note: 'Ưu tiên tương thích ABO nhưng có thể linh hoạt trong trường hợp khẩn cấp'
+                },
+                'B+': {
+                    canDonateTo: ['B+', 'AB+'],
+                    canReceiveFrom: ['B+', 'B-', 'O+', 'O-'],
+                    note: 'Ưu tiên tương thích ABO nhưng có thể linh hoạt trong trường hợp khẩn cấp'
+                },
+                'B-': {
+                    canDonateTo: ['B+', 'B-', 'AB+', 'AB-'],
+                    canReceiveFrom: ['B-', 'O-'],
+                    note: 'Ưu tiên tương thích ABO nhưng có thể linh hoạt trong trường hợp khẩn cấp'
+                },
+                'AB+': {
+                    canDonateTo: ['AB+'],
+                    canReceiveFrom: ['Tất cả các nhóm máu'],
+                    note: 'Ưu tiên tương thích ABO nhưng có thể linh hoạt trong trường hợp khẩn cấp'
+                },
+                'AB-': {
+                    canDonateTo: ['AB+', 'AB-'],
+                    canReceiveFrom: ['A-', 'B-', 'AB-', 'O-'],
+                    note: 'Ưu tiên tương thích ABO nhưng có thể linh hoạt trong trường hợp khẩn cấp'
+                },
+                'O+': {
+                    canDonateTo: ['A+', 'B+', 'AB+', 'O+'],
+                    canReceiveFrom: ['O+', 'O-'],
+                    note: 'Ưu tiên tương thích ABO nhưng có thể linh hoạt trong trường hợp khẩn cấp'
+                },
+                'O-': {
+                    canDonateTo: ['Tất cả các nhóm máu'],
+                    canReceiveFrom: ['O-'],
+                    note: 'Ưu tiên tương thích ABO nhưng có thể linh hoạt trong trường hợp khẩn cấp'
+                }
+            }
+        };
+
+        // Mô tả thành phần máu
+        const componentDescriptions = {
+            'whole-blood': 'Máu toàn phần bao gồm hồng cầu, huyết tương và tiểu cầu. Tuân theo quy tắc tương thích ABO và Rh thông thường.',
+            'red-cells': 'Hồng cầu mang oxy. Tuân thủ nghiêm ngặt quy tắc tương thích ABO và Rh.',
+            'plasma': 'Huyết tương là phần lỏng chứa protein và kháng thể. Quy tắc tương thích ngược với hồng cầu.',
+            'platelets': 'Tiểu cầu giúp đông máu. Ưu tiên tương thích ABO nhưng có thể linh hoạt trong trường hợp khẩn cấp.'
+        };
+
+        // Tên hiển thị thành phần máu
+        const componentDisplayNames = {
+            'whole-blood': 'Máu toàn phần',
+            'red-cells': 'Hồng cầu',
+            'plasma': 'Huyết tương',
+            'platelets': 'Tiểu cầu'
+        };
+
+        // Chức năng menu di động
+        const mobileMenuButton = document.getElementById('mobileMenuButton');
+        const closeMobileMenu = document.getElementById('closeMobileMenu');
+        const mobileNav = document.getElementById('mobileNav');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileNav.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        closeMobileMenu.addEventListener('click', () => {
+            mobileNav.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        document.querySelectorAll('.mobile-nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileNav.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropdownBtn = document.querySelector('.dropdown-btn');
+            const dropdown = document.querySelector('.dropdown');
+            if (dropdownBtn && window.innerWidth <= 768) {
+                dropdownBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    dropdown.classList.toggle('active');
+                });
+            }
+        });
+
+        // Xử lý form
+        const compatibilityForm = document.getElementById('compatibilityForm');
+        const bloodComponentSelect = document.getElementById('bloodComponent');
+        const bloodTypeSelect = document.getElementById('bloodType');
+        const componentDescription = document.getElementById('componentDescription');
+        const compatibilityResults = document.getElementById('compatibilityResults');
+        const selectedComponent = document.getElementById('selectedComponent');
+        const selectedBloodType = document.getElementById('selectedBloodType');
+        const canDonateTo = document.getElementById('canDonateTo');
+        const canReceiveFrom = document.getElementById('canReceiveFrom');
+
+        bloodComponentSelect.addEventListener('change', function() {
+            const selectedValue = this.value;
+            if (selectedValue) {
+                componentDescription.textContent = componentDescriptions[selectedValue];
+            } else {
+                componentDescription.textContent = '';
+            }
+        });
+
+        compatibilityForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const component = bloodComponentSelect.value;
+            const bloodType = bloodTypeSelect.value;
+            if (!component || !bloodType) {
+                alert('Vui lòng chọn cả thành phần máu và nhóm máu.');
+                return;
+            }
+            selectedComponent.textContent = componentDisplayNames[component];
+            selectedBloodType.textContent = bloodType;
+            const data = compatibilityData[component][bloodType];
+            canDonateTo.innerHTML = '';
+            canReceiveFrom.innerHTML = '';
+            data.canDonateTo.forEach(type => {
+                const li = document.createElement('li');
+                li.innerHTML = `<span class="blood-type">${type}</span>`;
+                canDonateTo.appendChild(li);
+            });
+            data.canReceiveFrom.forEach(type => {
+                const li = document.createElement('li');
+                li.innerHTML = `<span class="blood-type">${type}</span>`;
+                canReceiveFrom.appendChild(li);
+            });
+            if (data.note) {
+                const noteLi = document.createElement('li');
+                noteLi.className = 'compatibility-note';
+                noteLi.textContent = data.note;
+                canDonateTo.appendChild(noteLi);
+                canReceiveFrom.appendChild(noteLi.cloneNode(true));
+            }
+            compatibilityResults.style.display = 'block';
+            compatibilityResults.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+
+        // Kiểm tra trạng thái đăng nhập khi tải trang
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = auth.getCurrentUser();
+            if (!currentUser) {
+                localStorage.setItem('redirectAfterLogin', window.location.href);
+                window.location.href = 'login.html';
+            }
+            if (typeof updateUserProfile === 'function') {
+                updateUserProfile();
+            }
+            const authButtons = document.getElementById('authButtons');
+            const mobileAuthButtons = document.getElementById('mobileAuthButtons');
+            if (currentUser) {
+                if (authButtons) authButtons.style.display = 'none';
+                if (mobileAuthButtons) mobileAuthButtons.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
